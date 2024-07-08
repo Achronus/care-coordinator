@@ -1,12 +1,18 @@
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Rubik } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const rubik = Rubik({ subsets: ["latin"] });
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
-  title: "<TITLE_HERE>",
-  description: "<DESCRIPTION_HERE>",
+  title: "Your Partner in Efficient Healthcare Scheduling | CareCoordinator",
+  description:
+    "The ultimate solution for effortlessly managing your healthcare appointments.",
 };
 
 export default function RootLayout({
@@ -16,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${rubik.className} min-h-screen flex flex-col`}
-      >
+      <body className={cn(`${fontSans.className} min-h-screen flex flex-col`)}>
         {children}
       </body>
     </html>

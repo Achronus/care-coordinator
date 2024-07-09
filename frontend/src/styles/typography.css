@@ -40,4 +40,8 @@
   .text-12-semibold {
     @apply text-[12px] leading-[16px] font-semibold;
   }
+
+  .copyright {
+    @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
+  }
 }

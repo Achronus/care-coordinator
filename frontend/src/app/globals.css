@@ -4,7 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@/styles/form.css";
 @import "@/styles/layout.css";
+@import "@/styles/shadcn.css";
 @import "@/styles/typography.css";
 
 @layer base {

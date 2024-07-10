@@ -4,7 +4,7 @@ from app.config.env import load_dotenv_file
 from pydantic import BaseModel
 
 
-load_dotenv_file(".env.local")
+load_dotenv_file(".env.local", "care_coordinator")
 
 
 class DatabaseConfig(BaseModel):

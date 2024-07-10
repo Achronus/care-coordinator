@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 
 
-def finder(target: str) -> str:
+def finder(target: str, project_name: str) -> str:
     """
     Searches for the `target` file by traversing up the directory tree from the current directory.
 
@@ -17,14 +17,14 @@ def finder(target: str) -> str:
 
         # Traverse up parent directory
         parent_dir = os.path.dirname(current_dir)
-        if parent_dir == current_dir:
+        if parent_dir.find(str(project_name)) == -1:
             # Reached root directory without finding
-            return ""
+            raise FileNotFoundError(f"'{target}' file missing from project directory!")
 
         current_dir = parent_dir
 
 
-def load_dotenv_file(filename: str) -> None:
+def load_dotenv_file(filename: str, project_name: str) -> None:
     """Loads a dotenv file."""
-    path = finder(filename)
+    path = finder(filename, project_name)
     load_dotenv(path)

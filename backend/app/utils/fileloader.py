@@ -18,19 +18,20 @@ class FilePaths:
 
 class FileLoader:
     """A class for loading files."""
+
     def __init__(self) -> None:
         ROOT = os.getcwd()
-        APP = os.path.join(ROOT, 'app')
-        PUBLIC = os.path.join(APP, 'public')
+        APP = os.path.join(ROOT, "app")
+        PUBLIC = os.path.join(APP, "public")
 
         self.DIRPATHS = DirPaths(
             ROOT=ROOT,
             APP=APP,
-            PUBLIC=PUBLIC
+            PUBLIC=PUBLIC,
         )
         self.FILEPATHS = FilePaths(
-            '.env',
-            '.env.local'
+            ".env",
+            ".env.local",
         )
 
         self.local_dotenv()
@@ -55,7 +56,7 @@ class FileLoader:
     def is_dir(target: str, files: str, dirs: str) -> str:
         """Searches for a list of directory names in the current working directory."""
         return target in dirs
-    
+
     def prod_dotenv(self) -> None:
         """Loads the production dotenv file."""
         load_dotenv(self.FILEPATHS.ENV_PROD)

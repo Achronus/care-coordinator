@@ -7,3 +7,15 @@ export enum FormFieldType {
   SELECT = "select",
   SKELETON = "skeleton",
 }
+
+export enum Status {
+  PENDING = "pending",
+  SCHEDULED = "scheduled",
+  CANCELLED = "cancelled",
+}
+
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other",
+}

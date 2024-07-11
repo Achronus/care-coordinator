@@ -7,7 +7,7 @@ from appwrite.services.storage import Storage
 from appwrite.services.messaging import Messaging
 from appwrite.services.users import Users
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class DBConnections(BaseModel):
@@ -18,6 +18,8 @@ class DBConnections(BaseModel):
     storage: Storage
     messaging: Messaging
     users: Users
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 def init_db() -> DBConnections:

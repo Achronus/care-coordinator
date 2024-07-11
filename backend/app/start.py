@@ -12,7 +12,6 @@ def run(env_mode: str = "dev", host: str = "127.0.0.1", port: int = 8000) -> Non
         host=host,
         port=port,
         reload=dev_mode,
-        reload_includes="*",
     )
 
 

@@ -3,7 +3,7 @@ from typing import Any
 from appwrite.services.databases import Databases
 from appwrite.id import ID
 from fastapi import HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class CRUD(BaseModel):
@@ -12,6 +12,8 @@ class CRUD(BaseModel):
     db: Databases
     db_id: str
     collection_id: str
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     async def create_item(self, data: dict) -> dict[str, Any]:
         """Adds an item to the collection."""

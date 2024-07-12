@@ -2,8 +2,10 @@ from contextlib import asynccontextmanager
 
 from app.api import auth
 
-from fastapi import FastAPI
+from app.api.base import ErrorDetails
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 
 @asynccontextmanager
@@ -29,3 +31,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    details = ErrorDetails(code=exc.status_code, message=exc.detail).model_dump()
+    return JSONResponse(details, status_code=exc.status_code)

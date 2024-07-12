@@ -3,7 +3,7 @@ import argparse
 import uvicorn
 
 
-def run(env_mode: str = "dev", host: str = "127.0.0.1", port: int = 8000) -> None:
+def run(env_mode: str, host: str, port: int) -> None:
     """Start the server."""
     dev_mode = True if env_mode == "dev" else False
 

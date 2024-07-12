@@ -17,8 +17,8 @@ class UserBase(BaseModel):
 
 
 class CreateUser(UserBase):
-    password: str
+    pass
 
 
 class UserInDB(UserBase):
-    hashed_password: str
+    password: str

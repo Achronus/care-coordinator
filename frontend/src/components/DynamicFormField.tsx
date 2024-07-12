@@ -1,5 +1,11 @@
 "use client";
 
+import "react-datepicker/dist/react-datepicker.css";
+import "react-phone-number-input/style.css";
+
+import DatePicker from "react-datepicker";
+import PhoneInput from "react-phone-number-input";
+
 import {
   FormControl,
   FormField,
@@ -13,8 +19,6 @@ import { FormFieldType } from "@/types/enums";
 import Image from "next/image";
 
 import { Control } from "react-hook-form";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 
 type Props = {
   control: Control<any>;
@@ -32,7 +36,14 @@ type Props = {
 };
 
 const RenderField = ({ field, props }: { field: any; props: Props }) => {
-  const { fieldType, iconSrc, iconAlt, placeholder } = props;
+  const {
+    fieldType,
+    iconSrc,
+    iconAlt,
+    placeholder,
+    showTimeSelect,
+    dateFormat,
+  } = props;
 
   switch (fieldType) {
     case FormFieldType.INPUT:
@@ -69,6 +80,28 @@ const RenderField = ({ field, props }: { field: any; props: Props }) => {
             className="input-phone"
           />
         </FormControl>
+      );
+    case FormFieldType.DATE_PICKER:
+      return (
+        <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          <Image
+            src="/icons/calendar.svg"
+            width={24}
+            height={24}
+            alt="calendar"
+            className="mx-2"
+          />
+          <FormControl>
+            <DatePicker
+              selected={field.value}
+              onChange={(date) => field.onChange(date)}
+              showTimeSelect={showTimeSelect ?? false}
+              dateFormat={dateFormat ?? "PPP"}
+              timeInputLabel="Time:"
+              wrapperClassName="date-picker text-14-medium"
+            />
+          </FormControl>
+        </div>
       );
     default:
       break;

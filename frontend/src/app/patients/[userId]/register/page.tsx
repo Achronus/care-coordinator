@@ -1,3 +1,4 @@
+import RegisterForm from "@/forms/RegisterForm";
 import FormLayout from "@/layouts/Form";
 import { Logo, RegisterImg } from "@/lib/constants";
 
@@ -9,12 +10,10 @@ const Registration = () => {
         logo={Logo}
         displayImg={RegisterImg}
       >
-        {/* <PatientForm /> */}
+        <RegisterForm />
       </FormLayout>
     </main>
   );
 };
 
 export default Registration;
-
-// 1:21:55

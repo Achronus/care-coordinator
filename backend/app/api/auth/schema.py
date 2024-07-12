@@ -12,21 +12,29 @@ class TokenData(BaseModel):
 
 
 class UserBase(BaseModel):
+    """A base user model with common fields."""
+
     name: str
     email: str
     phone: str
 
 
 class CreateUser(UserBase):
+    """A user model for creating a user."""
+
     pass
 
 
-class CreateUserOutput(CreateUser):
+class CoreUserOutput(UserBase):
+    """A data model for storing the core user details."""
+
     userID: str
 
 
-class CreateUserResponse(SuccessResponse):
-    data: CreateUserOutput
+class CoreUserResponse(SuccessResponse):
+    """A response model for creating and retrieving the user."""
+
+    data: CoreUserOutput
 
 
 class UserInDB(UserBase):

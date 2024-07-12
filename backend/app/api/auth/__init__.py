@@ -37,7 +37,7 @@ def get_user(user_id: str):
 @router.post(
     "/user/register",
     status_code=status.HTTP_201_CREATED,
-    # response_model=CreateUserResponse,
+    response_model=CoreUserResponse,
 )
 def create_user(user: CreateUser):
     try:

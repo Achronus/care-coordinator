@@ -1,3 +1,4 @@
+from app.api.base import SuccessResponse
 from pydantic import BaseModel
 
 
@@ -18,6 +19,14 @@ class UserBase(BaseModel):
 
 class CreateUser(UserBase):
     pass
+
+
+class CreateUserOutput(CreateUser):
+    userID: str
+
+
+class CreateUserResponse(SuccessResponse):
+    data: CreateUserOutput
 
 
 class UserInDB(UserBase):

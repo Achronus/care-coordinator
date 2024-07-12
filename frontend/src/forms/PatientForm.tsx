@@ -1,10 +1,13 @@
 "use client";
 
 import DynamicFormField from "@/components/DynamicFormField";
+import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
+import { PostData } from "@/lib/retrieval";
 
 import { UserFormValidation } from "@/lib/validation";
+import { ErrorMsg, User } from "@/types/api";
 import { FormFieldType } from "@/types/enums";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,41 +17,45 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const PatientForm = () => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<ErrorMsg | null>(null);
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof UserFormValidation>>({
     resolver: zodResolver(UserFormValidation),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-    },
+    defaultValues: formData,
   });
 
-  async function onSubmit({
+  const onSubmit = async ({
     name,
     email,
     phone,
-  }: z.infer<typeof UserFormValidation>) {
+  }: z.infer<typeof UserFormValidation>) => {
     setIsLoading(true);
 
-    try {
-      // const userData = {
-      //   name,
-      //   email,
-      //   phone,
-      // };
-      // const user = await createUser(userData);
-      // if (user) router.push(`patients/${user.$id}/register`);
-    } catch (error) {
-      console.log(error);
+    const { data: user, error } = await PostData<User>("auth/user/register", {
+      name,
+      email,
+      phone,
+    });
+
+    if (user) {
+      router.push(`/patients/${user.userID}/register`);
+    } else {
+      setFormData({ name, email, phone });
+      setIsLoading(false);
+      setError(error);
     }
-  }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+      <form
+        method="POST"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 flex-1"
+      >
         <section className="mb-12 space-y-4">
           <h1 className="header">Get Started</h1>
           <p className="text-dark-700">Schedule your first appointment.</p>
@@ -83,6 +90,8 @@ const PatientForm = () => {
         />
 
         <SubmitButton isLoading={isLoading}>Get Started</SubmitButton>
+
+        {error && <ErrorPanel error={error} />}
       </form>
     </Form>
   );

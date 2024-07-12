@@ -8,7 +8,7 @@ export type CreateUserParams = {
 };
 
 export type User = CreateUserParams & {
-  $id: string;
+  userID: string;
 };
 
 export type RegisterUserParams = CreateUserParams & {
@@ -47,4 +47,11 @@ export type UpdateAppointmentParams = {
   userId: string;
   appointment: Appointment;
   type: string;
+};
+
+export type ErrorMsg = {
+  status: string;
+  code: number;
+  response: string;
+  message: string;
 };

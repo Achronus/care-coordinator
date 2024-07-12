@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import type { Metadata } from "next";
@@ -32,7 +31,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark">
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>

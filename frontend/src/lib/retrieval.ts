@@ -2,6 +2,7 @@ import { ErrorMsg } from "@/types/api";
 
 type DataResponse<T> = {
   data: T | null;
+  isLoading: boolean;
   error: ErrorMsg | null;
 };
 
@@ -16,6 +17,7 @@ function serverErrorMsg(): ErrorMsg {
 
 export async function GetData<T>(url: string): Promise<DataResponse<T>> {
   let data: T | null = null;
+  let isLoading = true;
   let error: ErrorMsg | null = null;
 
   try {
@@ -24,15 +26,18 @@ export async function GetData<T>(url: string): Promise<DataResponse<T>> {
 
     if (!response.ok) {
       error = output;
+      isLoading = false;
     } else {
       data = output;
+      isLoading = false;
     }
   } catch (err) {
     console.error("Fetch error:", err);
     error = serverErrorMsg();
+    isLoading = false;
   }
 
-  return { data, error };
+  return { data, isLoading, error };
 }
 
 export async function PostData<T>(
@@ -41,6 +46,7 @@ export async function PostData<T>(
 ): Promise<DataResponse<T>> {
   let data: T | null = null;
   let error: ErrorMsg | null = null;
+  let isLoading = true;
 
   try {
     const response = await fetch(
@@ -57,14 +63,17 @@ export async function PostData<T>(
     const output = await response.json();
 
     if (!response.ok) {
+      isLoading = false;
       error = output;
     } else {
+      isLoading = false;
       data = output.data;
     }
   } catch (err) {
     console.error("Fetch error:", err);
     error = serverErrorMsg();
+    isLoading = false;
   }
 
-  return { data, error };
+  return { data, isLoading, error };
 }

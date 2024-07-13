@@ -17,3 +17,31 @@ export function title(item: string) {
 }
 
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file);
+
+export const convertFileToObject = (file: File) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+
+  return new Promise((resolve, reject) => {
+    reader.onload = function () {
+      if (reader.result) {
+        const base64String = String(reader.result).split(",")[1];
+
+        const fileData = {
+          filename: file.name,
+          type: file.type,
+          size: file.size,
+          data: base64String,
+        };
+
+        resolve(fileData);
+      } else {
+        reject(new Error("Failed to read file"));
+      }
+    };
+
+    reader.onerror = function (error) {
+      reject(error);
+    };
+  });
+};

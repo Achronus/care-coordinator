@@ -5,3 +5,8 @@ type ImageType = {
   width?: number;
   height?: number;
 };
+
+type Avatar = {
+  name: string;
+  avatarIcon: string;
+};

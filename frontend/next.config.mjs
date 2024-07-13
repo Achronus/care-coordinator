@@ -15,9 +15,7 @@ const loadEnv = (filename) => {
   const rootExists = fs.existsSync(rootFile);
 
   if (!localExists && !rootExists) {
-    throw new Error(
-      `Missing environment file: '${filename}'!`
-    );
+    throw new Error(`Missing environment file: '${filename}'!`);
   }
 
   const filepath = localExists ? localFile : rootFile;
@@ -37,6 +35,11 @@ const nextConfig = {
         protocol: "https",
         hostname: apiUrl,
         pathname: `/api/*`,
+      },
+      {
+        protocol: "https",
+        hostname: "cloud.appwrite.io",
+        pathname: "/v1/**",
       },
     ],
   },

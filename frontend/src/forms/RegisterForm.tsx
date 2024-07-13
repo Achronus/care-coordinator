@@ -3,89 +3,95 @@
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import FileUploader from "@/components/FileUploader";
+import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form, FormControl } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
-import { Doctors } from "@/lib/constants";
+import useGetApiData from "@/hooks/useGetApiData";
 
+import { RegistrationFormDefaults } from "@/lib/constants";
 import { PostData } from "@/lib/retrieval";
-import { UserFormValidation } from "@/lib/validation";
-import { ErrorMsg, User } from "@/types/api";
+import { RegistrationFormValidation } from "@/lib/validation";
+import {
+  ErrorMsg,
+  FileData,
+  PatientDetailsAPI,
+  PhysicianList,
+  RegisterPatientParams,
+  User,
+} from "@/types/api";
 import { FormFieldType, Gender, IdentificationTypes } from "@/types/enums";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-const RegistrationFormDefaults = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  phone: "",
-  birthDate: new Date(Date.now()),
-  gender: "Male",
-  address: "",
-  occupation: "",
-  emergencyContactName: "",
-  emergencyContactNumber: "",
-  primaryPhysician: "",
-  insuranceProvider: "",
-  insurancePolicyNumber: "",
-  allergies: "",
-  currentMedication: "",
-  familyMedicalHistory: "",
-  pastMedicalHistory: "",
-  identificationType: "Birth Certificate",
-  identificationNumber: "",
-  identificationDocument: [],
-  treatmentConsent: false,
-  disclosureConsent: false,
-  privacyConsent: false,
-};
+import { convertFileToObject } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
 
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
-  const [formData, setFormData] = useState(RegistrationFormDefaults);
+  const [formData, setFormData] = useState<RegisterPatientParams>(
+    RegistrationFormDefaults
+  );
   const [formError, setFormError] = useState<ErrorMsg | null>(null);
 
-  const form = useForm<z.infer<typeof UserFormValidation>>({
-    resolver: zodResolver(UserFormValidation),
-    defaultValues: formData,
+  const form = useForm<z.infer<typeof RegistrationFormValidation>>({
+    resolver: zodResolver(RegistrationFormValidation),
+    defaultValues: { ...formData, birthDate: new Date(formData.birthDate) },
   });
 
-  const onSubmit = async ({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof UserFormValidation>) => {
+  const { data: doctors, isLoading: doctorsLoading } =
+    useGetApiData<PhysicianList>("api/doctor/list");
+
+  const onSubmit = async (
+    formValues: z.infer<typeof RegistrationFormValidation>
+  ) => {
     setFormSubmitLoading(true);
 
-    const { data: user, error } = await PostData<User>("<TBC>", {
-      name,
-      email,
-      phone,
-    });
-
-    if (user) {
-      // router.push(`<TBC>>`);
+    let fileData;
+    if (
+      formValues.identificationDocument &&
+      formValues.identificationDocument.length > 0
+    ) {
+      fileData = await convertFileToObject(
+        formValues.identificationDocument[0]
+      );
     } else {
-      setFormData(formData);
+      fileData = null;
+    }
+
+    const fullFormData: PatientDetailsAPI = {
+      ...formValues,
+      userId: user.userID,
+      birthDate: new Date(formValues.birthDate).toDateString(),
+      identificationDocument: fileData as FileData,
+    };
+
+    const { data: patient, error: patientError } =
+      await PostData<RegisterPatientParams>(
+        "api/patient/register",
+        fullFormData
+      );
+
+    if (patient) {
+      router.push(`/patients/${user.userID}/new-appointment`);
+    } else {
+      setFormData(formValues);
       setFormSubmitLoading(false);
-      setFormError(error);
+      setFormError(patientError);
     }
   };
 
   return (
     <Form {...form}>
       <form
-        method="POST"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-12 flex-1"
       >
@@ -209,20 +215,27 @@ const RegisterForm = ({ user }: { user: User }) => {
             label="Primary Physician"
             placeholder="Select a physician"
           >
-            {Doctors.map((doctor) => (
-              <SelectItem key={doctor.name} value={doctor.name}>
-                <div className="flex cursor-pointer items-center gap-2">
-                  <Image
-                    src={doctor.image}
-                    width={32}
-                    height={32}
-                    alt={doctor.name}
-                    className="rounded-full border border-dark-500"
-                  />
-                  <p>{doctor.name}</p>
-                </div>
+            {doctorsLoading && !doctors ? (
+              <SelectItem value="loading">
+                <Loading width={10} height={10} />
               </SelectItem>
-            ))}
+            ) : (
+              doctors &&
+              doctors.data.map((doctor: Avatar) => (
+                <SelectItem key={doctor.name} value={doctor.name}>
+                  <div className="flex cursor-pointer items-center gap-2">
+                    <Image
+                      src={doctor.avatarIcon}
+                      width={32}
+                      height={32}
+                      alt={doctor.name}
+                      className="rounded-full border border-dark-500"
+                    />
+                    <p>{doctor.name}</p>
+                  </div>
+                </SelectItem>
+              ))
+            )}
           </DynamicFormField>
 
           <div className="flex flex-col gap-6 xl:flex-row">
@@ -306,7 +319,7 @@ const RegisterForm = ({ user }: { user: User }) => {
           <DynamicFormField
             fieldType={FormFieldType.CUSTOM}
             control={form.control}
-            name="identificationDocumentId"
+            name="identificationDocument"
             label="Scanned Copy of Identification Document"
             renderCustom={(field) => (
               <FormControl>

@@ -1,5 +1,12 @@
 import { Appointment } from "./appwrite.types";
-import { Gender, Status } from "./enums";
+import { Gender, IdentificationTypes, Status } from "./enums";
+
+export type FileData = {
+  filename: string;
+  type: string;
+  size: number;
+  data: Uint8Array;
+};
 
 export type CreateUserParams = {
   name: string;
@@ -11,9 +18,8 @@ export type User = CreateUserParams & {
   userID: string;
 };
 
-export type RegisterUserParams = CreateUserParams & {
-  userId: string;
-  birthDate: Date;
+export type PatientDetails = CreateUserParams & {
+  birthDate: Date | string;
   gender: Gender;
   address: string;
   occupation: string;
@@ -26,10 +32,20 @@ export type RegisterUserParams = CreateUserParams & {
   currentMedication?: string;
   familyMedicalHistory?: string;
   pastMedicalHistory?: string;
-  identificationType?: string;
+  identificationType?: IdentificationTypes;
   identificationNumber?: string;
-  identificationDocument?: FormData;
+  treatmentConsent: boolean;
+  disclosureConsent: boolean;
   privacyConsent: boolean;
+};
+
+export type RegisterPatientParams = PatientDetails & {
+  identificationDocument?: File[];
+};
+
+export type PatientDetailsAPI = PatientDetails & {
+  userId: string;
+  identificationDocument?: FileData;
 };
 
 export type CreateAppointmentParams = {
@@ -54,4 +70,12 @@ export type ErrorMsg = {
   code: number;
   response: string;
   message: string;
+};
+
+export type PhysicianList = {
+  status: string;
+  code: number;
+  response: string;
+  data: Avatar[];
+  headers: null;
 };

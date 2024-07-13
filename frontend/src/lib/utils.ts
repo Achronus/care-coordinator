@@ -15,3 +15,5 @@ export function zip(...arrays: any[]) {
 export function title(item: string) {
   return item[0].toUpperCase() + item.substring(1, item.length);
 }
+
+export const convertFileToUrl = (file: File) => URL.createObjectURL(file);

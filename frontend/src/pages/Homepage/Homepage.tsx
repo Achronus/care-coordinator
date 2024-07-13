@@ -9,9 +9,10 @@ const Homepage = ({}: Props) => {
     <main className="flex h-screen max-h-screen">
       {/* TODO: OTP Verification */}
       <FormLayout
-        containerStyles="max-w-[496px]"
+        containerStyles="max-w-[496px] my-auto"
         logo={Logo}
         displayImg={DisplayImg}
+        showAdmin
       >
         <PatientForm />
       </FormLayout>

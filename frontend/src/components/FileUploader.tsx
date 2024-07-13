@@ -5,12 +5,12 @@ import Image from "next/image";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
-type Props = {
+type FileUploaderProps = {
   files: File[] | undefined;
   onChange: (files: File[]) => void;
 };
 
-const FileUploader = ({ files, onChange }: Props) => {
+const FileUploader = ({ files, onChange }: FileUploaderProps) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     onChange(acceptedFiles);
   }, []);

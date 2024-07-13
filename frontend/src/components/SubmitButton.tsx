@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
-type Props = {
+type SubmitBtnProps = {
   isLoading: boolean;
   children: React.ReactNode;
   className?: string;
 };
 
-const SubmitButton = ({ isLoading, className, children }: Props) => {
+const SubmitButton = ({ isLoading, className, children }: SubmitBtnProps) => {
   return (
     <Button
       type="submit"

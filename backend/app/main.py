@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from app.api import auth
+from app.api import auth, doctors, patients
 
 from app.api.base import ErrorDetails
 from fastapi import FastAPI, HTTPException, Request
@@ -17,7 +17,8 @@ app = FastAPI(docs_url="/api/docs", redoc_url=None, lifespan=lifespan)
 
 
 app.include_router(auth.router)
-# app.include_router(root.router, prefix="/api")
+app.include_router(doctors.router, prefix="/api")
+app.include_router(patients.router, prefix="/api")
 
 origins = [
     "http://localhost:3000",

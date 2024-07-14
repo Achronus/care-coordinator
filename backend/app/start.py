@@ -3,7 +3,7 @@ import argparse
 import uvicorn
 
 
-def run(env_mode: str, host: str, port: int) -> None:
+def run(env_mode: str = "dev", host: str = "127.0.0.1", port: int = 8080) -> None:
     """Start the server."""
     dev_mode = True if env_mode == "dev" else False
 
@@ -12,6 +12,7 @@ def run(env_mode: str, host: str, port: int) -> None:
         host=host,
         port=port,
         reload=dev_mode,
+        workers=1,
     )
 
 
@@ -24,4 +25,4 @@ if __name__ == "__main__":
     parser.add_argument("-pt", "--port", type=int, default=8000, required=False)
 
     args = parser.parse_args()
-    run(args.env, args.host, args.port)
+    run(env_mode=args.env, host=args.host, port=args.port)

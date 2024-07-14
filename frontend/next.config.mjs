@@ -24,7 +24,7 @@ const loadEnv = (filename) => {
   return env.parsed;
 };
 
-const env = loadEnv(".env.local");
+const env = loadEnv(".env.frontend");
 const apiUrl = process.env.FASTAPI_CONNECTION_URL;
 
 const nextConfig = {
@@ -38,7 +38,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "cloud.appwrite.io",
+        hostname: process.env.ENDPOINT_URL,
         pathname: "/v1/**",
       },
     ],

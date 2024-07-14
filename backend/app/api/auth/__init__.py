@@ -1,11 +1,11 @@
 from app.db import connect
 
-from .schema import CreateUser, CoreUserOutput, CoreUserResponse
+from .schema import CreateUser, CoreUserOutput, UserResponse
 
 from appwrite.id import ID
 from appwrite.exception import AppwriteException
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -14,12 +14,12 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 @router.get(
     "/user/{user_id}",
     status_code=status.HTTP_200_OK,
-    response_model=CoreUserResponse,
+    response_model=UserResponse,
 )
 def get_user(user_id: str):
     try:
         result = connect.users.get(user_id)
-        return CoreUserResponse(
+        return UserResponse(
             code=status.HTTP_200_OK,
             data=CoreUserOutput(
                 userID=result["$id"],
@@ -37,16 +37,16 @@ def get_user(user_id: str):
 @router.post(
     "/user/register",
     status_code=status.HTTP_201_CREATED,
-    response_model=CoreUserResponse,
+    response_model=UserResponse,
 )
-def create_user(user: CreateUser):
+def create_user(user: CreateUser = Depends()):
     try:
         result = connect.users.create(
             user_id=ID.unique(),
             **user.model_dump(),
             password=None,
         )
-        return CoreUserResponse(
+        return UserResponse(
             code=status.HTTP_201_CREATED,
             data=CoreUserOutput(
                 userID=result["$id"],

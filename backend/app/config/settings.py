@@ -1,10 +1,9 @@
-import os
-
 from app.config.env import load_dotenv_file
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-load_dotenv_file(".env.local", "care_coordinator")
+load_dotenv_file(".env.backend", "care_coordinator")
 
 
 class DatabaseConfig(BaseModel):
@@ -17,19 +16,16 @@ class DatabaseConfig(BaseModel):
     DOCTOR_COLLECTION_ID: str
     APPOINTMENT_COLLECTION_ID: str
     BUCKET_ID: str
+    ENDPOINT_URL: str
 
 
-class Settings:
+class Settings(BaseSettings):
     """A model for storing all config settings."""
 
-    DB = DatabaseConfig(
-        ID=str(os.getenv("DB_ID")),
-        PROJECT_ID=str(os.getenv("APPWRITE_PROJECT_ID")),
-        API_KEY=str(os.getenv("APPWRITE_API_KEY")),
-        PATIENT_COLLECTION_ID=str(os.getenv("PATIENT_COLLECTION_ID")),
-        DOCTOR_COLLECTION_ID=str(os.getenv("DOCTOR_COLLECTION_ID")),
-        APPOINTMENT_COLLECTION_ID=str(os.getenv("APPOINTMENT_COLLECTION_ID")),
-        BUCKET_ID=str(os.getenv("BUCKET_ID")),
+    DB: DatabaseConfig
+
+    model_config = SettingsConfigDict(
+        env_file=".env.backend", env_nested_delimiter="__"
     )
 
 

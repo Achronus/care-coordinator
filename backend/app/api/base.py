@@ -3,22 +3,24 @@ from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
 class SuccessResponse(BaseModel):
-    """
-    A base model for success API responses. Intended for client responses.
+    """A request model for successful API responses. Intended for client responses."""
 
-    Parameters:
-    - `code` (`integer`) - the HTTP response code for the request
-    - `data` (`pydantic.BaseModel`) - a Pydantic model containing the data response
-    - `headers` (`dict[str, str], optional`) - an optional set of headers to send with the response. `None` by default
-    - `status` (`string, frozen`) - the status of the response. Always `success`. Cannot be changed
-    - `response` (`string, frozen`) - a string representation of the HTTP response code. Dynamically populated based on the `code` value. Cannot be assigned manually
-    """
-
-    status: str = Field(default="success", frozen=True)
-    code: int
-    response: str | None = Field(default=None, frozen=True, validate_default=True)
-    data: BaseModel
-    headers: dict[str, str] | None = None
+    status: str = Field(
+        default="success",
+        frozen=True,
+        description="The status of the response. Cannot be changed.",
+    )
+    code: int = Field(..., description="The HTTP response code.")
+    response: str | None = Field(
+        default=None,
+        frozen=True,
+        validate_default=True,
+        description="The description for the type of HTTP response. Created dynamically. Cannot be assigned manually.",
+    )
+    data: BaseModel = Field(..., description="The response data.")
+    headers: dict[str, str] | None = Field(
+        default=None, description="The headers to send with the response (optional)."
+    )
 
     @field_validator("response")
     def validate_code(cls, _: str, info: ValidationInfo) -> str:
@@ -30,20 +32,21 @@ class SuccessResponse(BaseModel):
 
 
 class ErrorDetails(BaseModel):
-    """
-    A base model for error API responses. Intended for client responses using the `HTTPException`.
+    """A details model for error API responses. Intended for client responses using the `HTTPException`."""
 
-    Parameters:
-    - `code` (`integer | fastapi.status`) - the HTTP response code for the request
-    - `message` (`string`) - a string of text explaining the response error
-    - `status` (`string, frozen`) - the status of the response. Always `error`. Cannot be changed
-    - `response` (`string, frozen`) - a string representation of the HTTP response code. Dynamically populated based on the `code` value. Cannot be assigned manually
-    """
-
-    status: str = Field(default="error", frozen=True)
-    code: int
-    response: str | None = Field(default=None, frozen=True, validate_default=True)
-    message: str
+    status: str = Field(
+        default="error",
+        frozen=True,
+        description="The status of the response. Cannot be changed.",
+    )
+    code: int = Field(..., description="The HTTP response code.")
+    response: str | None = Field(
+        default=None,
+        frozen=True,
+        validate_default=True,
+        description="The description for the type of HTTP response. Created dynamically. Cannot be assigned manually.",
+    )
+    message: str = Field(..., description="The reason the error occured.")
 
     @field_validator("response")
     def validate_code(cls, _: str, info: ValidationInfo) -> str:

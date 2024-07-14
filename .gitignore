@@ -29,6 +29,8 @@ env/
 venv/
 .env.local
 .env.prod
+.env.backend
+.env.frontend
 
 # Visual Studio Code # 
 .vscode/* 

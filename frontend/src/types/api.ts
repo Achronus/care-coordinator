@@ -1,13 +1,6 @@
 import { Appointment } from "./appwrite.types";
 import { Gender, IdentificationTypes, Status } from "./enums";
 
-export type FileData = {
-  filename: string;
-  type: string;
-  size: number;
-  data: Uint8Array;
-};
-
 export type CreateUserParams = {
   name: string;
   email: string;
@@ -45,7 +38,11 @@ export type RegisterPatientParams = PatientDetails & {
 
 export type PatientDetailsAPI = PatientDetails & {
   userId: string;
-  identificationDocument?: FileData;
+  identificationDocumentId?: string;
+};
+
+export type FileData = {
+  id: string;
 };
 
 export type CreateAppointmentParams = {

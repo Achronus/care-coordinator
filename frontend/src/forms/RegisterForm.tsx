@@ -12,7 +12,7 @@ import { SelectItem } from "@/components/ui/select";
 import useGetApiData from "@/hooks/useGetApiData";
 
 import { RegistrationFormDefaults } from "@/lib/constants";
-import { PostData } from "@/lib/retrieval";
+import { PostData, PostFormData } from "@/lib/retrieval";
 import { RegistrationFormValidation } from "@/lib/validation";
 import {
   ErrorMsg,
@@ -20,7 +20,6 @@ import {
   PatientDetailsAPI,
   PhysicianList,
   RegisterPatientParams,
-  User,
 } from "@/types/api";
 import { FormFieldType, Gender, IdentificationTypes } from "@/types/enums";
 
@@ -29,11 +28,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { convertFileToObject } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const RegisterForm = ({ user }: { user: User }) => {
+const RegisterForm = ({ userId }: { userId: string }) => {
   const router = useRouter();
 
   const [formSubmitLoading, setFormSubmitLoading] = useState(false);
@@ -55,37 +53,45 @@ const RegisterForm = ({ user }: { user: User }) => {
   ) => {
     setFormSubmitLoading(true);
 
-    let fileData;
+    let fileData = new FormData();
     if (
       formValues.identificationDocument &&
       formValues.identificationDocument.length > 0
     ) {
-      fileData = await convertFileToObject(
-        formValues.identificationDocument[0]
-      );
-    } else {
-      fileData = null;
+      fileData.append("file", formValues.identificationDocument[0]);
     }
 
-    const fullFormData: PatientDetailsAPI = {
-      ...formValues,
-      userId: user.userID,
-      birthDate: new Date(formValues.birthDate).toDateString(),
-      identificationDocument: fileData as FileData,
-    };
+    const { data: fileDetails, error: fileError } =
+      await PostFormData<FileData>("api/patient/upload", fileData);
 
-    const { data: patient, error: patientError } =
-      await PostData<RegisterPatientParams>(
-        "api/patient/register",
-        fullFormData
-      );
+    const formValuesCopy = formValues;
+    delete formValuesCopy.identificationDocument;
 
-    if (patient) {
-      router.push(`/patients/${user.userID}/new-appointment`);
+    if (fileDetails) {
+      const fullFormData: PatientDetailsAPI = {
+        ...formValuesCopy,
+        userId: userId,
+        birthDate: new Date(formValues.birthDate).toDateString(),
+        identificationDocumentId: fileDetails.id,
+      };
+
+      const { data: patient, error: patientError } =
+        await PostData<RegisterPatientParams>(
+          "api/patient/register",
+          fullFormData
+        );
+
+      if (patient) {
+        router.push(`/patients/${userId}/new-appointment`);
+      } else {
+        setFormData(formValues);
+        setFormSubmitLoading(false);
+        setFormError(patientError);
+      }
     } else {
       setFormData(formValues);
       setFormSubmitLoading(false);
-      setFormError(patientError);
+      setFormError(fileError);
     }
   };
 

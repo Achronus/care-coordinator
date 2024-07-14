@@ -62,7 +62,41 @@ export async function PostData<T>(
     );
     const output = await response.json();
 
-    if (!response.ok) {
+    if (!Object.hasOwn(output, "data")) {
+      isLoading = false;
+      error = output;
+    } else {
+      isLoading = false;
+      data = output.data;
+    }
+  } catch (err) {
+    console.error("Fetch error:", err);
+    error = serverErrorMsg();
+    isLoading = false;
+  }
+
+  return { data, isLoading, error };
+}
+
+export async function PostFormData<T>(
+  url: string,
+  formData: FormData
+): Promise<DataResponse<T>> {
+  let data: T | null = null;
+  let error: ErrorMsg | null = null;
+  let isLoading = true;
+
+  try {
+    const response = await fetch(
+      `${process.env.FASTAPI_CONNECTION_URL}${url}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const output = await response.json();
+
+    if (!Object.hasOwn(output, "data")) {
       isLoading = false;
       error = output;
     } else {

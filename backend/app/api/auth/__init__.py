@@ -5,7 +5,7 @@ from .schema import CreateUser, CoreUserOutput, UserResponse
 from appwrite.id import ID
 from appwrite.exception import AppwriteException
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, HTTPException, status
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -39,7 +39,7 @@ def get_user(user_id: str):
     status_code=status.HTTP_201_CREATED,
     response_model=UserResponse,
 )
-def create_user(user: CreateUser = Depends()):
+def create_user(user: CreateUser):
     try:
         result = connect.users.create(
             user_id=ID.unique(),

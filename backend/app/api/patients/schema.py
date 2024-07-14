@@ -1,41 +1,66 @@
+from typing import Optional
 from app.api.base import SuccessResponse
 
 from .enums import Gender, IdentificationTypes
 
-from pydantic import BaseModel, ConfigDict
-
-
-class File(BaseModel):
-    """A model for file delivery."""
-
-    filename: str
-    type: str
-    size: int
-    data: bytes
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PatientBase(BaseModel):
     """A base patient model with common fields."""
 
-    userId: str
-    birthDate: str
-    gender: Gender
-    address: str
-    occupation: str
-    emergencyContactName: str
-    emergencyContactNumber: str
-    primaryPhysician: str
-    insuranceProvider: str
-    insurancePolicyNumber: str
-    allergies: str | None = None
-    currentMedication: str | None = None
-    familyMedicalHistory: str | None = None
-    identificationType: IdentificationTypes | None = None
-    identificationNumber: str | None = None
-    identificationDocument: File | None = None
-    treatmentConsent: bool
-    disclosureConsent: bool
-    privacyConsent: bool
+    userId: str = Field(..., description="The user ID associated with the patient.")
+    name: str = Field(..., description="The name of the patient.")
+    email: str = Field(..., description="The email of the patient.")
+    phone: str = Field(..., description="The contact number of the patient.")
+    birthDate: str = Field(
+        ...,
+        description="The birth date of the patient in the format: 'dd MMMM yyyy' -> e.g., 14 July 2024.",
+    )
+    gender: Gender = Field(..., description="The gender of the patient.")
+    address: str = Field(..., description="The address of the patient.")
+    occupation: str = Field(..., description="The occupation of the patient.")
+    emergencyContactName: str = Field(
+        ..., description="The name of the emergency contact."
+    )
+    emergencyContactNumber: str = Field(
+        ..., description="The phone number of the emergency contact."
+    )
+    primaryPhysician: str = Field(
+        ..., description="The name of the patients primary physician."
+    )
+    insuranceProvider: str = Field(
+        ..., description="The name of the patients insurance provider."
+    )
+    insurancePolicyNumber: str = Field(
+        ..., description="The patients insurance policy number."
+    )
+    allergies: Optional[str] = Field(
+        None, description="Any known allergies of the patient."
+    )
+    currentMedication: Optional[str] = Field(
+        None, description="Current medications the patient is taking."
+    )
+    familyMedicalHistory: Optional[str] = Field(
+        None, description="Family medical history of the patient."
+    )
+    identificationType: Optional[IdentificationTypes] = Field(
+        None, description="The type of identification document."
+    )
+    identificationNumber: Optional[str] = Field(
+        None, description="The identification number of the document."
+    )
+    identificationDocumentId: Optional[str] = Field(
+        None, description="The ID of the identification document."
+    )
+    identificationDocumentUrl: Optional[str] = Field(
+        None, description="The URL of the identification document."
+    )
+    treatmentConsent: bool = Field(..., description="Consent for treatment.")
+    disclosureConsent: bool = Field(
+        ..., description="Consent for disclosure of medical information."
+    )
+    privacyConsent: bool = Field(..., description="Consent for privacy policy.")
 
     model_config = ConfigDict(use_enum_values=True)
 

@@ -1,14 +1,13 @@
 from app.api.base import SuccessResponse
-from fastapi import Query
 from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
     """A base user model with common fields."""
 
-    name: str = Field(Query(..., description="The name of the user."))
-    email: str = Field(Query(..., description="The email of the user."))
-    phone: str = Field(Query(..., description="The contact number of the user."))
+    name: str = Field(..., description="The name of the user.")
+    email: str = Field(..., description="The email of the user.")
+    phone: str = Field(..., description="The contact number of the user.")
 
 
 class CreateUser(UserBase):
@@ -17,13 +16,10 @@ class CreateUser(UserBase):
     pass
 
 
-class CoreUserOutput(BaseModel):
+class CoreUserOutput(UserBase):
     """The user details output."""
 
     userID: str = Field(..., description="The ID of the user.")
-    name: str = Field(..., description="The name of the user.")
-    email: str = Field(..., description="The email of the user.")
-    phone: str = Field(..., description="The contact number of the user.")
 
 
 class UserResponse(SuccessResponse):

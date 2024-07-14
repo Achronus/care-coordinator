@@ -71,7 +71,25 @@ class CreatePatient(PatientBase):
     pass
 
 
-class CreatePatientResponse(SuccessResponse):
-    """A response model for creating a patient."""
+class PatientOutputData(BaseModel):
+    """The output data for the created patient."""
 
-    pass
+    id: str = Field(..., description="The id of the created patient.")
+
+
+class CreatePatientResponse(SuccessResponse):
+    """The response for creating a patient."""
+
+    data: PatientOutputData
+
+
+class UploadOutputData(BaseModel):
+    """The output data for the patient file upload."""
+
+    id: str = Field(..., description="The id of the created file.")
+
+
+class PostUploadResponse(SuccessResponse):
+    """The response for patient file uploads."""
+
+    data: UploadOutputData

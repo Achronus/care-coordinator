@@ -53,9 +53,6 @@ class PatientBase(BaseModel):
     identificationDocumentId: Optional[str] = Field(
         None, description="The ID of the identification document."
     )
-    identificationDocumentUrl: Optional[str] = Field(
-        None, description="The URL of the identification document."
-    )
     treatmentConsent: bool = Field(..., description="Consent for treatment.")
     disclosureConsent: bool = Field(
         ..., description="Consent for disclosure of medical information."

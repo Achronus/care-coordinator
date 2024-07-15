@@ -65,10 +65,10 @@ def create_patient(patient: CreatePatient):
     try:
         file_id = patient.identificationDocumentId
         url = f"{settings.DB.ENDPOINT_URL}/v1/storage/buckets/{settings.DB.BUCKET_ID}/files/{file_id}/view?project={settings.DB.PROJECT_ID}"
-        patient.identificationDocumentUrl = url
 
         data = patient.model_dump()
-        data = data.pop("userId")
+        data["identificationDocumentUrl"] = url
+        data.pop("userId")
 
         _ = connect.storage.update_file(
             bucket_id=settings.DB.BUCKET_ID,
@@ -98,7 +98,8 @@ def create_patient(patient: CreatePatient):
         )
 
     except AppwriteException as e:
+        print(e)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=e.message,
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A patient already exists with these details.",
         )

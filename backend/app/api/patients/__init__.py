@@ -10,6 +10,8 @@ from .schema import (
 )
 
 from appwrite.exception import AppwriteException
+from appwrite.permission import Permission
+from appwrite.role import Role
 from appwrite.id import ID
 from appwrite.input_file import InputFile
 
@@ -34,6 +36,10 @@ async def upload_file(
             bucket_id=settings.DB.BUCKET_ID,
             file_id=ID.unique(),
             file=InputFile.from_bytes(bytes=content, filename=file.filename),
+            permissions=[
+                Permission.read(Role.team(id="admin")),
+                Permission.write(Role.team(id="admin")),
+            ],
         )
 
         return PostUploadResponse(
@@ -61,11 +67,29 @@ def create_patient(patient: CreatePatient):
         url = f"{settings.DB.ENDPOINT_URL}/v1/storage/buckets/{settings.DB.BUCKET_ID}/files/{file_id}/view?project={settings.DB.PROJECT_ID}"
         patient.identificationDocumentUrl = url
 
+        data = patient.model_dump()
+        data = data.pop("userId")
+
+        _ = connect.storage.update_file(
+            bucket_id=settings.DB.BUCKET_ID,
+            file_id=file_id,
+            permissions=[
+                Permission.read(Role.user(id=patient.userId)),
+                Permission.write(Role.user(id=patient.userId)),
+            ],
+        )
+
         response = connect.db.create_document(
             database_id=settings.DB.ID,
             collection_id=settings.DB.PATIENT_COLLECTION_ID,
             document_id=ID.unique(),
-            data=patient.model_dump(),
+            data=data,
+            permissions=[
+                Permission.read(Role.user(id=patient.userId)),
+                Permission.write(Role.user(id=patient.userId)),
+                Permission.read(Role.team(id="admin")),
+                Permission.write(Role.team(id="admin")),
+            ],
         )
 
         return CreatePatientResponse(

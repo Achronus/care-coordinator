@@ -65,9 +65,16 @@ export const RegistrationFormValidation = z.object({
   currentMedication: z.string().optional(),
   familyMedicalHistory: z.string().optional(),
   pastMedicalHistory: z.string().optional(),
-  identificationType: z.nativeEnum(IdentificationTypes).optional(),
-  identificationNumber: z.string().optional(),
-  identificationDocument: z.custom<File[]>().optional(),
+  identificationType: z.nativeEnum(IdentificationTypes, {
+    message: "A type must be selected",
+  }),
+  identificationNumber: z.string().min(3, {
+    message: "Identification number must be at least 3 characters",
+  }),
+  identificationDocument: z.custom<File[]>(
+    (val) => val,
+    "An identification document is required"
+  ),
   treatmentConsent: z
     .boolean()
     .default(false)

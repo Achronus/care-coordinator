@@ -1,4 +1,4 @@
-import { Gender } from "@/types/enums";
+import { Gender, Status } from "@/types/enums";
 
 export const Logo: ImageType = {
   src: "/logo.svg",
@@ -27,8 +27,7 @@ export const RegistrationFormDefaults = {
   name: "",
   email: "",
   phone: "",
-  userId: "",
-  birthDate: new Date(Date.now()),
+  birthDate: undefined,
   gender: "Male" as Gender,
   address: "",
   occupation: "",

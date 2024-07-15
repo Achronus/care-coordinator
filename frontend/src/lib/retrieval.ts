@@ -24,12 +24,12 @@ export async function GetData<T>(url: string): Promise<DataResponse<T>> {
     const response = await fetch(`${process.env.FASTAPI_CONNECTION_URL}${url}`);
     const output = await response.json();
 
-    if (!response.ok) {
+    if (!Object.hasOwn(output, "data")) {
+      isLoading = false;
       error = output;
-      isLoading = false;
     } else {
-      data = output;
       isLoading = false;
+      data = output;
     }
   } catch (err) {
     console.error("Fetch error:", err);

@@ -1,5 +1,3 @@
-"use client";
-
 import RegisterForm from "@/forms/RegisterForm";
 import FormLayout from "@/layouts/Form";
 import { Logo, RegisterImg } from "@/lib/constants";

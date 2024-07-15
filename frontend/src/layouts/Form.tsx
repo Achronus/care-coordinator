@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-type Props = {
+type FormLayoutProps = {
   containerStyles: string;
   logo: ImageType;
   displayImg: ImageType;
@@ -16,7 +16,7 @@ const FormLayout = ({
   displayImg,
   children,
   showAdmin,
-}: Props) => {
+}: FormLayoutProps) => {
   return (
     <>
       <section className="container remove-scrollbar">

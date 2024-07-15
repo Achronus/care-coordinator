@@ -16,7 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const PatientForm = () => {
+const UserForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorMsg | null>(null);
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
@@ -27,23 +27,18 @@ const PatientForm = () => {
     defaultValues: formData,
   });
 
-  const onSubmit = async ({
-    name,
-    email,
-    phone,
-  }: z.infer<typeof UserFormValidation>) => {
+  const onSubmit = async (formValues: z.infer<typeof UserFormValidation>) => {
     setIsLoading(true);
 
-    const { data: user, error } = await PostData<User>("auth/user/register", {
-      name,
-      email,
-      phone,
-    });
+    const { data: user, error } = await PostData<User>(
+      "auth/user/register",
+      formValues
+    );
 
     if (user) {
       router.push(`/patients/${user.userID}/register`);
     } else {
-      setFormData({ name, email, phone });
+      setFormData(formValues);
       setIsLoading(false);
       setError(error);
     }
@@ -97,4 +92,4 @@ const PatientForm = () => {
   );
 };
 
-export default PatientForm;
+export default UserForm;

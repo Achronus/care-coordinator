@@ -1,47 +1,21 @@
-import { Appointment } from "./appwrite.types";
-import { Gender, IdentificationTypes, Status } from "./enums";
+import { Appointment, PatientDetails } from "./forms";
 
-export type CreateUserParams = {
+export type CreateUser = {
   name: string;
   email: string;
   phone: string;
 };
 
-export type User = CreateUserParams & {
+export type User = CreateUser & {
   userID: string;
 };
 
-export type PatientDetails = CreateUserParams & {
-  birthDate: Date | string;
-  gender: Gender;
-  address: string;
-  occupation: string;
-  emergencyContactName: string;
-  emergencyContactNumber: string;
-  primaryPhysician: string;
-  insuranceProvider: string;
-  insurancePolicyNumber: string;
-  allergies?: string;
-  currentMedication?: string;
-  familyMedicalHistory?: string;
-  pastMedicalHistory?: string;
-  identificationType?: IdentificationTypes;
-  identificationNumber?: string;
-  treatmentConsent: boolean;
-  disclosureConsent: boolean;
-  privacyConsent: boolean;
-};
-
-export type RegisterPatientParams = PatientDetails & {
-  identificationDocument?: File[];
-};
-
-export type PatientDetailsAPI = PatientDetails & {
+export type CreatePatient = PatientDetails & {
   userId: string;
   identificationDocumentId?: string;
 };
 
-export type FileData = {
+export type APIDataId = {
   id: string;
 };
 
@@ -49,10 +23,10 @@ export type CreateAppointmentParams = {
   userId: string;
   patient: string;
   primaryPhysician: string;
-  reason: string;
   schedule: Date;
-  status: Status;
-  note?: string;
+  reason: string;
+  status: string;
+  notes?: string;
 };
 
 export type UpdateAppointmentParams = {
@@ -67,6 +41,14 @@ export type ErrorMsg = {
   code: number;
   response: string;
   message: string;
+};
+
+export type UserResponse = {
+  status: string;
+  code: number;
+  response: string;
+  data: User;
+  headers: null;
 };
 
 export type PhysicianList = {

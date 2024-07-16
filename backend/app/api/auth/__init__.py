@@ -28,6 +28,7 @@ def get_user(user_id: str):
         )
 
     except AppwriteException as e:
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=e.message,
@@ -55,6 +56,7 @@ def create_user(user: CreateUser):
         )
 
     except AppwriteException as e:
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=e.message,

@@ -1,6 +1,5 @@
 from app.config.settings import settings
 
-from app.db.crud import CRUD
 from appwrite.client import Client
 from appwrite.services.databases import Databases
 from appwrite.services.storage import Storage
@@ -25,7 +24,7 @@ class DBConnections(BaseModel):
 def init_db() -> DBConnections:
     """Initialise the database."""
     client = Client()
-    client.set_endpoint("https://cloud.appwrite.io/v1")
+    client.set_endpoint(settings.DB.ENDPOINT_URL)
     client.set_project(settings.DB.PROJECT_ID)
     client.set_key(settings.DB.API_KEY)
 
@@ -44,21 +43,3 @@ def init_db() -> DBConnections:
 
 
 connect = init_db()
-
-patient = CRUD(
-    db=connect.db,
-    db_id=settings.DB.ID,
-    collection_id=settings.DB.PATIENT_COLLECTION_ID,
-)
-
-doctor = CRUD(
-    db=connect.db,
-    db_id=settings.DB.ID,
-    collection_id=settings.DB.DOCTOR_COLLECTION_ID,
-)
-
-appointment = CRUD(
-    db=connect.db,
-    db_id=settings.DB.ID,
-    collection_id=settings.DB.APPOINTMENT_COLLECTION_ID,
-)

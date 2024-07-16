@@ -51,7 +51,7 @@ def create_appointment(appointment: CreateAppointment):
         )
 
     except AppwriteException as e:
-        print(e)
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="An appointment already exists with these details.",
@@ -92,7 +92,7 @@ def get_appointment(id: str):
         )
 
     except AppwriteException as e:
-        print(e)
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Appointment doesn't exist.",
@@ -129,7 +129,7 @@ def get_success_details(id: str):
         )
 
     except AppwriteException as e:
-        print(e)
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Appointment doesn't exist.",

@@ -37,6 +37,7 @@ def doctors_list():
         )
 
     except AppwriteException as e:
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=e.message,
@@ -68,7 +69,7 @@ def get_doctor(id: str):
         )
 
     except AppwriteException as e:
-        print(e)
+        print(e.message)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Doctor doesn't exist.",

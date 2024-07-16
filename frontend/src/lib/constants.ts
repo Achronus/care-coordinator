@@ -23,6 +23,14 @@ export const RegisterImg: ImageType = {
   className: "max-w-[390px]",
 };
 
+export const AppointmentImg: ImageType = {
+  src: "/appointment.png",
+  height: 1000,
+  width: 1000,
+  alt: "Appointment",
+  className: "max-w-[390px] bg-bottom",
+};
+
 export const RegistrationFormDefaults = {
   name: "",
   email: "",
@@ -47,3 +55,29 @@ export const RegistrationFormDefaults = {
   disclosureConsent: false,
   privacyConsent: false,
 };
+
+export const AppointmentFormDefaults = {
+  primaryPhysician: "",
+  reason: "",
+  notes: "",
+  schedule: new Date(),
+  cancellationReason: "",
+};
+
+export const AppointmentTypeDetails: AppointmentDetails[] = [
+  {
+    type: "create",
+    status: Status.PENDING,
+    iconUrl: "/icons/pending.svg",
+  },
+  {
+    type: "cancel",
+    status: Status.CANCELLED,
+    iconUrl: "/icons/cancelled.svg",
+  },
+  {
+    type: "schedule",
+    status: Status.SCHEDULED,
+    iconUrl: "/icons/check.svg",
+  },
+];

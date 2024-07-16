@@ -20,12 +20,6 @@ export enum Gender {
   OTHER = "Other",
 }
 
-export enum StatusIcon {
-  SCHEDULED = "/icons/check.svg",
-  PENDING = "/icons/pending.svg",
-  CANCELLED = "/icons/cancelled.svg",
-}
-
 export enum IdentificationTypes {
   BIRTH_CERT = "Birth Certificate",
   DRIVERS_LICENSE = "Driver's License",
@@ -38,4 +32,10 @@ export enum IdentificationTypes {
   STATE_ID_CARD = "State ID Card",
   STUDENT_ID_CARD = "Student ID Card",
   VOTER_ID_CARD = "Voter ID Card",
+}
+
+export enum AppointmentType {
+  CREATE = "create",
+  CANCEL = "cancel",
+  SCHEDULE = "schedule",
 }

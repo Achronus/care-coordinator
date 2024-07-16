@@ -75,7 +75,9 @@ const RegisterForm = ({ userId }: { userId: string }) => {
       );
 
       if (patient) {
-        router.push(`/patients/${userId}/new-appointment`);
+        router.push(
+          `/patients/${userId}/new-appointment?patientId=${patient.id}`
+        );
       } else {
         setFormData(formValues);
         setFormSubmitLoading(false);

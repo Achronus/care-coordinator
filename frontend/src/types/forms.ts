@@ -26,18 +26,7 @@ export type PatientDetailsForm = PatientDetails & {
   identificationDocument?: File[];
 };
 
-export type Appointment = {
-  patient: Patient;
-  schedule: Date;
-  status: Status;
-  primaryPhysician: string;
-  reason: string;
-  notes?: string;
-  userId: string;
-  cancellationReason: string | null;
-};
-
-export type AppointmentForm = {
+export type AppointmentFormType = {
   primaryPhysician?: string;
   reason?: string;
   notes?: string;

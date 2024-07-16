@@ -10,3 +10,9 @@ type Avatar = {
   name: string;
   avatarIcon: string;
 };
+
+type AppointmentDetails = {
+  type: string;
+  status: string;
+  iconUrl: string;
+};

@@ -1,4 +1,4 @@
-import { Appointment, PatientDetails } from "./forms";
+import { PatientDetails } from "./forms";
 
 export type CreateUser = {
   name: string;
@@ -32,7 +32,6 @@ export type CreateAppointmentParams = {
 export type UpdateAppointmentParams = {
   appointmentId: string;
   userId: string;
-  appointment: Appointment;
   type: string;
 };
 

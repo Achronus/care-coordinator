@@ -9,6 +9,7 @@ type ImageType = {
 type Avatar = {
   name: string;
   avatarIcon: string;
+  id: string;
 };
 
 type AppointmentDetails = {

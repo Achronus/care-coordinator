@@ -26,6 +26,7 @@ def doctors_list():
             ListDoctorItem(
                 name=item["name"],
                 avatarIcon=item["avatarIcon"],
+                id=item["$id"],
             )
             for item in result["documents"]
         ]

@@ -15,12 +15,7 @@ import { PostData } from "@/lib/retrieval";
 import { title } from "@/lib/utils";
 import { getAppointmentSchema } from "@/lib/validation";
 
-import {
-  APIDataId,
-  CreateAppointmentParams,
-  ErrorMsg,
-  PhysicianList,
-} from "@/types/api";
+import { APIDataId, CreateAppointmentParams, ErrorMsg } from "@/types/api";
 import { AppointmentType, FormFieldType } from "@/types/enums";
 import { AppointmentFormType } from "@/types/forms";
 
@@ -48,7 +43,7 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
   const AppointmentFormValidation = getAppointmentSchema(type);
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<PhysicianList>("api/doctor/list");
+    useGetApiData<Avatar[]>("api/doctor/list");
 
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
@@ -128,7 +123,7 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
                 </SelectItem>
               ) : (
                 doctors &&
-                doctors.data.map((doctor: Avatar) => (
+                doctors.map((doctor: Avatar) => (
                   <SelectItem key={doctor.name} value={doctor.name}>
                     <div className="flex cursor-pointer items-center gap-2">
                       <Image

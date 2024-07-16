@@ -12,6 +12,7 @@ class ListDoctorItem(DoctorBase):
     """A data model for storing a single doctor list item."""
 
     avatarIcon: str
+    id: str
 
 
 class DoctorListResponse(SuccessResponse):

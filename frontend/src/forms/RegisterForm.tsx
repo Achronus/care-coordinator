@@ -14,7 +14,7 @@ import useGetApiData from "@/hooks/useGetApiData";
 import { RegistrationFormDefaults } from "@/lib/constants";
 import { PostData, PostFormData } from "@/lib/retrieval";
 import { RegistrationFormValidation } from "@/lib/validation";
-import { APIDataId, CreatePatient, ErrorMsg, PhysicianList } from "@/types/api";
+import { APIDataId, CreatePatient, ErrorMsg } from "@/types/api";
 import { FormFieldType, Gender, IdentificationTypes } from "@/types/enums";
 
 import Image from "next/image";
@@ -41,7 +41,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
   });
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<PhysicianList>("api/doctor/list");
+    useGetApiData<Avatar[]>("api/doctor/list");
 
   const onSubmit = async (
     formValues: z.infer<typeof RegistrationFormValidation>
@@ -59,7 +59,8 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     const { data: fileDetails, error: fileError } =
       await PostFormData<APIDataId>("api/patient/upload", fileData);
 
-    const { identificationDocument, ...formValuesCopy } = formValues;
+    const { identificationDocument, primaryPhysician, ...formValuesCopy } =
+      formValues;
 
     if (fileDetails) {
       const fullFormData: CreatePatient = {
@@ -67,6 +68,9 @@ const RegisterForm = ({ userId }: { userId: string }) => {
         userId: userId,
         birthDate: new Date(formValues.birthDate),
         identificationDocumentId: fileDetails.id,
+        primaryPhysician: doctors!.find(
+          (item) => item.name === formValues.primaryPhysician
+        )!.id,
       };
 
       const { data: patient, error: patientError } = await PostData<APIDataId>(
@@ -222,7 +226,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
               </SelectItem>
             ) : (
               doctors &&
-              doctors.data.map((doctor: Avatar) => (
+              doctors.map((doctor: Avatar) => (
                 <SelectItem key={doctor.name} value={doctor.name}>
                   <div className="flex cursor-pointer items-center gap-2">
                     <Image

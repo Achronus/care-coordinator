@@ -12,6 +12,7 @@ export type User = CreateUser & {
 
 export type CreatePatient = PatientDetails & {
   userId: string;
+  primaryPhysician: string;
   identificationDocumentId?: string;
 };
 
@@ -50,10 +51,4 @@ export type UserResponse = {
   headers: null;
 };
 
-export type PhysicianList = {
-  status: string;
-  code: number;
-  response: string;
-  data: Avatar[];
-  headers: null;
-};
+export type AppointmentDetails = {};

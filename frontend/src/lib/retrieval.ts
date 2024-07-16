@@ -29,7 +29,7 @@ export async function GetData<T>(url: string): Promise<DataResponse<T>> {
       error = output;
     } else {
       isLoading = false;
-      data = output;
+      data = output.data;
     }
   } catch (err) {
     console.error("Fetch error:", err);

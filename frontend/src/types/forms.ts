@@ -1,5 +1,5 @@
 import { CreateUser } from "./api";
-import { Gender, IdentificationTypes, Status } from "./enums";
+import { Gender, IdentificationTypes } from "./enums";
 
 export type PatientDetails = CreateUser & {
   birthDate?: Date;
@@ -8,7 +8,6 @@ export type PatientDetails = CreateUser & {
   occupation: string;
   emergencyContactName: string;
   emergencyContactNumber: string;
-  primaryPhysician: string;
   insuranceProvider: string;
   insurancePolicyNumber: string;
   allergies?: string;
@@ -23,6 +22,7 @@ export type PatientDetails = CreateUser & {
 };
 
 export type PatientDetailsForm = PatientDetails & {
+  primaryPhysician: string;
   identificationDocument?: File[];
 };
 

@@ -1,6 +1,9 @@
+from typing import Annotated
+
+from app.db import get_appointment_db
+
 from app.api.doctors.schema import DoctorItem
-from app.db import connect
-from app.config.settings import settings
+from app.db.crud import CRUD
 
 from .schema import (
     AppointmentOutputData,
@@ -12,12 +15,11 @@ from .schema import (
     GetSuccessDetails,
 )
 
-from appwrite.id import ID
 from appwrite.exception import AppwriteException
 from appwrite.permission import Permission
 from appwrite.role import Role
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 
 router = APIRouter(prefix="/appointment", tags=["Appointments"])
@@ -28,12 +30,12 @@ router = APIRouter(prefix="/appointment", tags=["Appointments"])
     status_code=status.HTTP_201_CREATED,
     response_model=CreateAppointmentResponse,
 )
-def create_appointment(appointment: CreateAppointment):
+def create_appointment(
+    appointment: CreateAppointment,
+    db: Annotated[CRUD, Depends(get_appointment_db)],
+):
     try:
-        response = connect.db.create_document(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.APPOINTMENT_COLLECTION_ID,
-            document_id=ID.unique(),
+        response = db.create_one(
             data=appointment.model_dump(),
             permissions=[
                 Permission.read(Role.user(id=appointment.userId)),
@@ -63,13 +65,9 @@ def create_appointment(appointment: CreateAppointment):
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentResponse,
 )
-def get_appointment(id: str):
+def get_appointment(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
     try:
-        response = connect.db.get_document(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.APPOINTMENT_COLLECTION_ID,
-            document_id=id,
-        )
+        response = db.get_one(id)
 
         patient = response["patient"]
         doctor = DoctorItem(
@@ -104,13 +102,9 @@ def get_appointment(id: str):
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentSuccessDetailsResponse,
 )
-def get_success_details(id: str):
+def get_success_details(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
     try:
-        response = connect.db.get_document(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.APPOINTMENT_COLLECTION_ID,
-            document_id=id,
-        )
+        response = db.get_one(id)
 
         doctor = DoctorItem(
             **response["primaryPhysician"],

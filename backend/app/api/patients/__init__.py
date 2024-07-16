@@ -1,5 +1,7 @@
-from app.db import connect
-from app.config.settings import settings
+from typing import Annotated
+
+from app.db import create_file_url, get_patient_db, get_storage_db
+from app.db.crud import CRUD, StorageCRUD
 
 from .schema import (
     CreatePatient,
@@ -12,10 +14,9 @@ from .schema import (
 from appwrite.exception import AppwriteException
 from appwrite.permission import Permission
 from appwrite.role import Role
-from appwrite.id import ID
 from appwrite.input_file import InputFile
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 
 router = APIRouter(prefix="/patient", tags=["Patients"])
 
@@ -27,14 +28,13 @@ router = APIRouter(prefix="/patient", tags=["Patients"])
     operation_id="PatientUpload",
 )
 async def upload_file(
+    db: Annotated[StorageCRUD, Depends(get_storage_db)],
     file: UploadFile = File(..., description="The file to upload."),
 ):
     try:
         content = await file.read()
 
-        response = connect.storage.create_file(
-            bucket_id=settings.DB.BUCKET_ID,
-            file_id=ID.unique(),
+        response = db.create_one(
             file=InputFile.from_bytes(bytes=content, filename=file.filename),
             permissions=[
                 Permission.read(Role.team(id="admin")),
@@ -61,28 +61,28 @@ async def upload_file(
     status_code=status.HTTP_201_CREATED,
     response_model=CreatePatientResponse,
 )
-def create_patient(patient: CreatePatient):
+async def create_patient(
+    patient: CreatePatient,
+    file_db: Annotated[StorageCRUD, Depends(get_storage_db)],
+    patient_db: Annotated[CRUD, Depends(get_patient_db)],
+):
     try:
         file_id = patient.identificationDocumentId
-        url = f"{settings.DB.ENDPOINT_URL}/storage/buckets/{settings.DB.BUCKET_ID}/files/{file_id}/view?project={settings.DB.PROJECT_ID}"
+        url = create_file_url(file_id)
 
         data = patient.model_dump()
         data["identificationDocumentUrl"] = url
         data.pop("userId")
 
-        _ = connect.storage.update_file(
-            bucket_id=settings.DB.BUCKET_ID,
-            file_id=file_id,
+        _ = file_db.update_one(
+            id=file_id,
             permissions=[
                 Permission.read(Role.user(id=patient.userId)),
                 Permission.write(Role.user(id=patient.userId)),
             ],
         )
 
-        response = connect.db.create_document(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.PATIENT_COLLECTION_ID,
-            document_id=ID.unique(),
+        response = patient_db.create_one(
             data=data,
             permissions=[
                 Permission.read(Role.user(id=patient.userId)),

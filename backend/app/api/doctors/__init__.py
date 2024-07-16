@@ -1,11 +1,12 @@
-from app.db import connect
-from app.config.settings import settings
+from typing import Annotated
+from app.db import get_doctor_db
+from app.db.crud import CRUD
 
 from .schema import DoctorListResponse, DoctorItem, GetDoctorResponse
 
 from appwrite.exception import AppwriteException
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 router = APIRouter(prefix="/doctor", tags=["Doctors"])
 
@@ -15,12 +16,9 @@ router = APIRouter(prefix="/doctor", tags=["Doctors"])
     status_code=status.HTTP_200_OK,
     response_model=DoctorListResponse,
 )
-def doctors_list():
+def doctors_list(db: Annotated[CRUD, Depends(get_doctor_db)]):
     try:
-        result = connect.db.list_documents(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.DOCTOR_COLLECTION_ID,
-        )
+        documents = db.get_multiple()
 
         data = [
             DoctorItem(
@@ -28,7 +26,7 @@ def doctors_list():
                 avatarIcon=item["avatarIcon"],
                 id=item["$id"],
             )
-            for item in result["documents"]
+            for item in documents
         ]
 
         return DoctorListResponse(
@@ -49,13 +47,9 @@ def doctors_list():
     status_code=status.HTTP_200_OK,
     response_model=GetDoctorResponse,
 )
-def get_doctor(id: str):
+def get_doctor(id: str, db: Annotated[CRUD, Depends(get_doctor_db)]):
     try:
-        result = connect.db.get_document(
-            database_id=settings.DB.ID,
-            collection_id=settings.DB.DOCTOR_COLLECTION_ID,
-            document_id=id,
-        )
+        result = db.get_one(id)
 
         data = DoctorItem(
             name=result["name"],

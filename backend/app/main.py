@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
-from app.api import auth, doctors, patients, appointments
+from app import auth
+from app.api import doctors, patients, appointments
 
 from app.api.base import ErrorDetails
 from fastapi import FastAPI, HTTPException, Request

@@ -1,11 +1,12 @@
-from app.db import connect
+from typing import Annotated
+from app.db import get_users_db
+from app.db.crud import UserCRUD
 
 from .schema import CreateUser, CoreUserOutput, UserResponse
 
-from appwrite.id import ID
 from appwrite.exception import AppwriteException
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -16,9 +17,12 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
     status_code=status.HTTP_200_OK,
     response_model=UserResponse,
 )
-def get_user(user_id: str):
+def get_user(
+    user_id: str,
+    db: Annotated[UserCRUD, Depends(get_users_db)],
+):
     try:
-        result = connect.users.get(user_id)
+        result = db.get_one(user_id)
         return UserResponse(
             code=status.HTTP_200_OK,
             data=CoreUserOutput(
@@ -40,13 +44,12 @@ def get_user(user_id: str):
     status_code=status.HTTP_201_CREATED,
     response_model=UserResponse,
 )
-def create_user(user: CreateUser):
+def create_user(
+    user: CreateUser,
+    db: Annotated[UserCRUD, Depends(get_users_db)],
+):
     try:
-        result = connect.users.create(
-            user_id=ID.unique(),
-            **user.model_dump(),
-            password=None,
-        )
+        result = db.create_one(**user.model_dump())
         return UserResponse(
             code=status.HTTP_201_CREATED,
             data=CoreUserOutput(

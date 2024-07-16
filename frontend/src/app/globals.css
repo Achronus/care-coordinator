@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@/styles/display.css";
 @import "@/styles/form.css";
 @import "@/styles/layout.css";
 @import "@/styles/shadcn.css";

@@ -41,7 +41,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
   });
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<Avatar[]>("api/doctor/list");
+    useGetApiData<Doctor[]>("api/doctor/list");
 
   const onSubmit = async (
     formValues: z.infer<typeof RegistrationFormValidation>
@@ -226,7 +226,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
               </SelectItem>
             ) : (
               doctors &&
-              doctors.map((doctor: Avatar) => (
+              doctors.map((doctor: Doctor) => (
                 <SelectItem key={doctor.name} value={doctor.name}>
                   <div className="flex cursor-pointer items-center gap-2">
                     <Image

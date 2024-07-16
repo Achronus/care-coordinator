@@ -45,3 +45,14 @@ export const convertFileToObject = (file: File) => {
     };
   });
 };
+
+export const formatDateTime = (datetime: string) => {
+  return new Date(datetime).toLocaleString("en-GB", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+};

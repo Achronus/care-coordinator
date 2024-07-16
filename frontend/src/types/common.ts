@@ -6,7 +6,7 @@ type ImageType = {
   height?: number;
 };
 
-type Avatar = {
+type Doctor = {
   name: string;
   avatarIcon: string;
   id: string;

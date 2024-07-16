@@ -43,7 +43,7 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
   const AppointmentFormValidation = getAppointmentSchema(type);
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<Avatar[]>("api/doctor/list");
+    useGetApiData<Doctor[]>("api/doctor/list");
 
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
@@ -61,7 +61,9 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
         const appointmentData: CreateAppointmentParams = {
           userId,
           patient: patientId,
-          primaryPhysician: formValues.primaryPhysician,
+          primaryPhysician: doctors!.find(
+            (item) => item.name === formValues.primaryPhysician
+          )!.id,
           schedule: new Date(formValues.schedule),
           reason: formValues.reason!,
           status: details.status,
@@ -123,7 +125,7 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
                 </SelectItem>
               ) : (
                 doctors &&
-                doctors.map((doctor: Avatar) => (
+                doctors.map((doctor: Doctor) => (
                   <SelectItem key={doctor.name} value={doctor.name}>
                     <div className="flex cursor-pointer items-center gap-2">
                       <Image

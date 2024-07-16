@@ -51,4 +51,8 @@ export type UserResponse = {
   headers: null;
 };
 
-export type AppointmentDetails = {};
+export type AppointmentSuccessDetails = {
+  id: string;
+  schedule: string;
+  doctor: Doctor;
+};

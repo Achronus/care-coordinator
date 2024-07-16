@@ -9,7 +9,6 @@ import { useSearchParams } from "next/navigation";
 
 const NewAppointment = ({ params }: { params: { userId: string } }) => {
   const searchParams = useSearchParams();
-
   const patientId = searchParams.get("patientId") ?? "";
 
   return (

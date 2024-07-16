@@ -1,0 +1,15 @@
+@tailwind utilities;
+
+@layer utilities {
+  .side-img {
+    @apply hidden h-full object-cover md:block;
+  }
+
+  .bg-image {
+    @apply bg-black-900 bg-light-rays bg-cover bg-no-repeat;
+  }
+
+  .success-img {
+    @apply m-auto flex flex-1 flex-col items-center justify-between gap-10 py-10;
+  }
+}

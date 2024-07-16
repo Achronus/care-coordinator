@@ -64,7 +64,7 @@ async def upload_file(
 def create_patient(patient: CreatePatient):
     try:
         file_id = patient.identificationDocumentId
-        url = f"{settings.DB.ENDPOINT_URL}/v1/storage/buckets/{settings.DB.BUCKET_ID}/files/{file_id}/view?project={settings.DB.PROJECT_ID}"
+        url = f"{settings.DB.ENDPOINT_URL}/storage/buckets/{settings.DB.BUCKET_ID}/files/{file_id}/view?project={settings.DB.PROJECT_ID}"
 
         data = patient.model_dump()
         data["identificationDocumentUrl"] = url

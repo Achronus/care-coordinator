@@ -24,7 +24,6 @@ class DBConnections(BaseModel):
 def init_db() -> DBConnections:
     """Initialise the database."""
     client = Client()
-    client.set_endpoint(settings.DB.ENDPOINT_URL)
     client.set_project(settings.DB.PROJECT_ID)
     client.set_key(settings.DB.API_KEY)
 

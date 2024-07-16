@@ -1,9 +1,10 @@
+from datetime import datetime
 from typing import Optional
 from app.api.base import SuccessResponse
 
 from .enums import Gender, IdentificationTypes
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class PatientBase(BaseModel):
@@ -13,7 +14,7 @@ class PatientBase(BaseModel):
     name: str = Field(..., description="The name of the patient.")
     email: str = Field(..., description="The email of the patient.")
     phone: str = Field(..., description="The contact number of the patient.")
-    birthDate: str = Field(
+    birthDate: datetime = Field(
         ...,
         description="The birth date of the patient in the format: 'dd MMMM yyyy' -> e.g., 14 July 2024.",
     )
@@ -60,6 +61,10 @@ class PatientBase(BaseModel):
     privacyConsent: bool = Field(..., description="Consent for privacy policy.")
 
     model_config = ConfigDict(use_enum_values=True)
+
+    @field_validator("birthDate")
+    def validate_schedule(cls, birth_date: datetime) -> str:
+        return birth_date.isoformat()
 
 
 class CreatePatient(PatientBase):

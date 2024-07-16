@@ -8,14 +8,20 @@ class DoctorBase(BaseModel):
     name: str
 
 
-class ListDoctorItem(DoctorBase):
-    """A data model for storing a single doctor list item."""
+class DoctorItem(DoctorBase):
+    """A data model for a single doctor item."""
 
     avatarIcon: str
     id: str
 
 
 class DoctorListResponse(SuccessResponse):
-    """A response model for returning a list of doctors."""
+    """A response for getting a list of doctors."""
 
-    data: list[ListDoctorItem]
+    data: list[DoctorItem]
+
+
+class GetDoctorResponse(SuccessResponse):
+    """A response for getting a single doctor."""
+
+    data: DoctorItem

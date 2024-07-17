@@ -1,4 +1,5 @@
 from typing import Annotated
+
 from app.db import get_users_db
 from app.db.crud import UserCRUD
 

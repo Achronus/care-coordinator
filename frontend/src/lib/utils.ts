@@ -56,3 +56,11 @@ export const formatDateTime = (datetime: string) => {
     hour12: true,
   });
 };
+
+export function encryptKey(passkey: string) {
+  return btoa(passkey);
+}
+
+export function decryptKey(passkey: string) {
+  return atob(passkey);
+}

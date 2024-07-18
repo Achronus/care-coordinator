@@ -30,3 +30,9 @@ class GetRecentAppointmentsResponse(SuccessResponse[AppointmentCountsData]):
     """The response for getting recent appointments."""
 
     pass
+
+
+class CancelAppointmentResponse(SuccessResponse[AppointmentOutputData]):
+    """The response for cancelling an appointment."""
+
+    pass

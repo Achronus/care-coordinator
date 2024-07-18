@@ -7,6 +7,7 @@ from app.api.doctors.schema import DoctorItem
 from app.db.crud import CRUD
 
 from .schema import (
+    CancelAppointment,
     AppointmentCountsData,
     AppointmentItemData,
     AppointmentOutputData,
@@ -16,6 +17,7 @@ from .schema import (
 )
 
 from .response import (
+    CancelAppointmentResponse,
     CreateAppointmentResponse,
     GetAppointmentResponse,
     GetAppointmentSuccessDetailsResponse,
@@ -197,6 +199,36 @@ def get_success_details(id: str, db: Annotated[CRUD, Depends(get_appointment_db)
         return GetAppointmentSuccessDetailsResponse(
             code=status.HTTP_200_OK,
             data=data,
+        )
+
+    except AppwriteException as e:
+        print(e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment doesn't exist.",
+        )
+
+
+@router.patch(
+    "/cancel",
+    status_code=status.HTTP_200_OK,
+    response_model=CancelAppointmentResponse,
+)
+def cancel_appointment(
+    details: CancelAppointment, db: Annotated[CRUD, Depends(get_appointment_db)]
+):
+    try:
+        response = db.update_one(
+            details.id,
+            data={
+                "cancellationReason": details.cancellationReason,
+                "status": details.status,
+            },
+        )
+
+        return CancelAppointmentResponse(
+            code=status.HTTP_200_OK,
+            data=AppointmentOutputData(id=response["$id"]),
         )
 
     except AppwriteException as e:

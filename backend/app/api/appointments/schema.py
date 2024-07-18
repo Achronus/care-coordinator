@@ -48,7 +48,7 @@ class CreateAppointment(AppointmentBase):
 class AppointmentOutputData(BaseModel):
     """The output data for the created appointment."""
 
-    id: str = Field(..., description="The id of the created appointment.")
+    id: str = Field(..., description="The id of the appointment.")
 
 
 class GetAppointmentData(AppointmentBase, AppointmentOutputData):
@@ -130,3 +130,13 @@ class AppointmentCountsData(BaseModel):
     pendingCount: int
     cancelledCount: int
     appointments: list[AppointmentItemData]
+
+
+class CancelAppointment(BaseModel):
+    """A model for cancelling an appointment."""
+
+    id: str = Field(..., description="The id of the appointment.")
+    cancellationReason: str = Field(
+        ..., description="The reason for cancelling the appointment."
+    )
+    status: Status = Field(..., description="The status of the appointment.")

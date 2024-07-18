@@ -37,11 +37,11 @@ export const RegistrationFormValidation = z.object({
   address: z
     .string()
     .min(5, "Address must be at least 5 characters")
-    .max(500, "Address must be at most 500 characters"),
+    .max(100, "Address must be at most 100 characters"),
   occupation: z
     .string()
     .min(2, "Occupation must be at least 2 characters")
-    .max(500, "Occupation must be at most 500 characters"),
+    .max(100, "Occupation must be at most 100 characters"),
   emergencyContactName: z
     .string()
     .min(2, "Contact name must be at least 2 characters")
@@ -101,37 +101,26 @@ export const CreateAppointmentSchema = z.object({
   reason: z
     .string()
     .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
-  notes: z.string().optional(),
+    .max(300, "Reason must be at most 300 characters"),
+  notes: z
+    .string()
+    .max(300, "Reason must be at most 300 characters")
+    .optional(),
   cancellationReason: z.string().optional(),
 });
 
 export const ScheduleAppointmentSchema = z.object({
   primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  reason: z
+    .string()
+    .min(2, "Reason must be at least 2 characters")
+    .max(300, "Reasons must be at most 300 characters"),
   schedule: z.coerce.date(),
-  reason: z.string().optional(),
-  notes: z.string().optional(),
-  cancellationReason: z.string().optional(),
 });
 
 export const CancelAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
-  schedule: z.coerce.date(),
-  reason: z.string().optional(),
-  notes: z.string().optional(),
   cancellationReason: z
     .string()
     .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
+    .max(300, "Reason must be at most 300 characters"),
 });
-
-export function getAppointmentSchema(type: string) {
-  switch (type) {
-    case "create":
-      return CreateAppointmentSchema;
-    case "cancel":
-      return CancelAppointmentSchema;
-    default:
-      return ScheduleAppointmentSchema;
-  }
-}

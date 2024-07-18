@@ -25,4 +25,4 @@ export type AppointmentDetails = {
   textColour: string;
 };
 
-export type StatCardTypes = "create" | "cancel" | "schedule";
+export type AppointmentType = "create" | "cancel" | "schedule";

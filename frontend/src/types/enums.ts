@@ -33,9 +33,3 @@ export enum IdentificationTypes {
   STUDENT_ID_CARD = "Student ID Card",
   VOTER_ID_CARD = "Voter ID Card",
 }
-
-export enum AppointmentType {
-  CREATE = "create",
-  CANCEL = "cancel",
-  SCHEDULE = "schedule",
-}

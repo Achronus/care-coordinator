@@ -1,10 +1,10 @@
 import { AppointmentTypeDetails } from "@/lib/constants";
 import { cn, title } from "@/lib/utils";
-import { StatCardTypes } from "@/types/common";
+import { AppointmentType } from "@/types/common";
 import Image from "next/image";
 
 type StatCardProps = {
-  type: StatCardTypes;
+  type: AppointmentType;
   count: number;
 };
 

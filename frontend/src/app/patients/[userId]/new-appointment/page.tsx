@@ -1,9 +1,8 @@
 "use client";
 
-import AppointmentForm from "@/forms/AppointmentForm";
+import CreateAppointmentForm from "@/forms/CreateAppointmentForm";
 import FormLayout from "@/layouts/Form";
 import { AppointmentImg, Logo } from "@/lib/constants";
-import { AppointmentType } from "@/types/enums";
 
 import { useSearchParams } from "next/navigation";
 
@@ -18,11 +17,7 @@ const NewAppointment = ({ params }: { params: { userId: string } }) => {
         logo={Logo}
         displayImg={AppointmentImg}
       >
-        <AppointmentForm
-          type={AppointmentType.CREATE}
-          userId={params.userId}
-          patientId={patientId}
-        />
+        <CreateAppointmentForm userId={params.userId} patientId={patientId} />
       </FormLayout>
     </main>
   );

@@ -34,6 +34,7 @@ type FormProps = {
   name: string;
   label?: string;
   placeholder?: string;
+  value?: string;
   iconSrc?: string;
   iconAlt?: string;
   disabled?: boolean;
@@ -51,6 +52,7 @@ const RenderField = ({ field, props }: { field: any; props: FormProps }) => {
     iconSrc,
     iconAlt,
     placeholder,
+    value,
     showTimeSelect,
     dateFormat,
     renderCustom,
@@ -99,7 +101,7 @@ const RenderField = ({ field, props }: { field: any; props: FormProps }) => {
             placeholder={placeholder}
             international
             withCountryCallingCode
-            value={field.value}
+            value={value ? value : field.value}
             onChange={field.onChange}
             className="input-phone"
           />
@@ -117,7 +119,7 @@ const RenderField = ({ field, props }: { field: any; props: FormProps }) => {
           />
           <FormControl>
             <DatePicker
-              selected={field.value}
+              selected={value ? value : field.value}
               onChange={(date) => field.onChange(date)}
               showTimeSelect={showTimeSelect ?? false}
               dateFormat={dateFormat ?? "dd MMMM yyyy"}
@@ -131,7 +133,10 @@ const RenderField = ({ field, props }: { field: any; props: FormProps }) => {
     case FormFieldType.SELECT:
       return (
         <FormControl>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={value ? value : field.value}
+          >
             <FormControl className="shad-select-trigger">
               <SelectTrigger>
                 <SelectValue placeholder={placeholder} />

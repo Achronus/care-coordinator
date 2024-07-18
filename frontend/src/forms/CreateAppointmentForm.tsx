@@ -12,12 +12,11 @@ import {
   AppointmentTypeDetails,
 } from "@/lib/constants";
 import { PostData } from "@/lib/retrieval";
-import { title } from "@/lib/utils";
-import { getAppointmentSchema } from "@/lib/validation";
+import { CreateAppointmentSchema } from "@/lib/validation";
 
 import { APIDataId, CreateAppointmentParams, ErrorMsg } from "@/types/api";
 import { Doctor } from "@/types/common";
-import { AppointmentType, FormFieldType } from "@/types/enums";
+import { FormFieldType } from "@/types/enums";
 import { AppointmentFormType } from "@/types/forms";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,12 +27,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type AppointmentFormProps = {
-  type: AppointmentType;
   userId: string;
   patientId: string;
 };
 
-const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
+const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
+  const [type, setType] = useState("create");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorMsg | null>(null);
   const [formData, setFormData] = useState<AppointmentFormType>(
@@ -41,24 +40,22 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
   );
   const router = useRouter();
 
-  const AppointmentFormValidation = getAppointmentSchema(type);
-
   const { data: doctors, isLoading: doctorsLoading } =
     useGetApiData<Doctor[]>("api/doctor/list");
 
-  const form = useForm<z.infer<typeof AppointmentFormValidation>>({
-    resolver: zodResolver(AppointmentFormValidation),
+  const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
+    resolver: zodResolver(CreateAppointmentSchema),
     defaultValues: formData,
   });
 
   const onSubmit = async (
-    formValues: z.infer<typeof AppointmentFormValidation>
+    formValues: z.infer<typeof CreateAppointmentSchema>
   ) => {
     setIsLoading(true);
     try {
       const details = AppointmentTypeDetails.find((item) => item.type === type);
 
-      if (details && type === "create" && patientId) {
+      if (details && patientId) {
         const appointmentData: CreateAppointmentParams = {
           userId,
           patient: patientId,
@@ -111,85 +108,66 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
           <p className="text-dark-700">Request a new appointment in seconds.</p>
         </section>
 
-        {type !== "cancel" && (
-          <>
-            <DynamicFormField
-              fieldType={FormFieldType.SELECT}
-              control={form.control}
-              name="primaryPhysician"
-              label="Doctor"
-              placeholder="Select a doctor"
-            >
-              {doctorsLoading && !doctors ? (
-                <SelectItem value="loading">
-                  <Loading width={10} height={10} />
-                </SelectItem>
-              ) : (
-                doctors &&
-                doctors.map((doctor: Doctor) => (
-                  <SelectItem key={doctor.name} value={doctor.name}>
-                    <div className="flex cursor-pointer items-center gap-2">
-                      <Image
-                        src={doctor.avatarIcon}
-                        width={32}
-                        height={32}
-                        alt={doctor.name}
-                        className="rounded-full border border-dark-500"
-                      />
-                      <p>{doctor.name}</p>
-                    </div>
-                  </SelectItem>
-                ))
-              )}
-            </DynamicFormField>
+        <DynamicFormField
+          fieldType={FormFieldType.SELECT}
+          control={form.control}
+          name="primaryPhysician"
+          label="Doctor"
+          placeholder="Select a doctor"
+        >
+          {doctorsLoading && !doctors ? (
+            <SelectItem value="loading">
+              <Loading width={10} height={10} />
+            </SelectItem>
+          ) : (
+            doctors &&
+            doctors.map((doctor: Doctor) => (
+              <SelectItem key={doctor.name} value={doctor.name}>
+                <div className="flex cursor-pointer items-center gap-2">
+                  <Image
+                    src={doctor.avatarIcon}
+                    width={32}
+                    height={32}
+                    alt={doctor.name}
+                    className="rounded-full border border-dark-500"
+                  />
+                  <p>{doctor.name}</p>
+                </div>
+              </SelectItem>
+            ))
+          )}
+        </DynamicFormField>
 
-            <div className="flex flex-col gap-6 xl:flex-row">
-              <DynamicFormField
-                fieldType={FormFieldType.TEXTAREA}
-                control={form.control}
-                name="reason"
-                label="Reason For Appointment"
-                placeholder="The reason for your appointment"
-              />
-
-              <DynamicFormField
-                fieldType={FormFieldType.TEXTAREA}
-                control={form.control}
-                name="notes"
-                label="Notes"
-                placeholder="Additional information we need to know"
-              />
-            </div>
-
-            <DynamicFormField
-              fieldType={FormFieldType.DATE_PICKER}
-              control={form.control}
-              name="schedule"
-              label="Expected Appointment Date"
-              placeholder="Select your appointment date and time"
-              showTimeSelect
-              dateFormat="dd/MM/yyyy, hh:mm:aa"
-            />
-          </>
-        )}
-
-        {type === "cancel" && (
+        <div className="flex flex-col gap-6 xl:flex-row">
           <DynamicFormField
             fieldType={FormFieldType.TEXTAREA}
             control={form.control}
-            name="cancellationReason"
-            label="Reason For Cancellation"
-            placeholder="Enter reason for cancellation"
+            name="reason"
+            label="Reason For Appointment"
+            placeholder="The reason for your appointment"
           />
-        )}
 
-        <SubmitButton
-          isLoading={isLoading}
-          className={`${
-            type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
-          } w-full`}
-        >
-          {`${title(type)} Appointment`}
+          <DynamicFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="notes"
+            label="Notes"
+            placeholder="Additional information we need to know"
+          />
+        </div>
+
+        <DynamicFormField
+          fieldType={FormFieldType.DATE_PICKER}
+          control={form.control}
+          name="schedule"
+          label="Expected Appointment Date"
+          placeholder="Select your appointment date and time"
+          showTimeSelect
+          dateFormat="dd/MM/yyyy, hh:mm:aa"
+        />
+
+        <SubmitButton isLoading={isLoading} className="shad-primary-btn w-full">
+          Create Appointment
         </SubmitButton>
 
         {error && <ErrorPanel error={error} />}
@@ -198,4 +176,4 @@ const AppointmentForm = ({ type, userId, patientId }: AppointmentFormProps) => {
   );
 };
 
-export default AppointmentForm;
+export default CreateAppointmentForm;

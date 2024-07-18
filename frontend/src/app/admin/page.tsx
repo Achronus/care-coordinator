@@ -2,6 +2,7 @@
 
 import { Loading } from "@/components/Loading";
 import StatCard from "@/components/StatCard";
+import { AppointmentTable } from "@/components/appointments";
 import useGetApiData from "@/hooks/useGetApiData";
 import { AppointmentListData } from "@/types/api";
 
@@ -41,14 +42,26 @@ const Admin = () => {
           <Loading />
         ) : (
           appointmentData && (
-            <section className="admin-stat">
-              <StatCard
-                type="schedule"
-                count={appointmentData.scheduledCount}
-              />
-              <StatCard type="create" count={appointmentData.pendingCount} />
-              <StatCard type="cancel" count={appointmentData.cancelledCount} />
-            </section>
+            <>
+              <section className="admin-stat">
+                <StatCard
+                  type="schedule"
+                  count={appointmentData.scheduledCount}
+                />
+                <StatCard type="create" count={appointmentData.pendingCount} />
+                <StatCard
+                  type="cancel"
+                  count={appointmentData.cancelledCount}
+                />
+              </section>
+
+              <section>
+                <AppointmentTable
+                  // columns={columns}
+                  data={appointmentData.appointments}
+                />
+              </section>
+            </>
           )
         )}
       </main>

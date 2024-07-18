@@ -1,3 +1,4 @@
+import { Doctor } from "./common";
 import { PatientDetails } from "./forms";
 
 export type CreateUser = {
@@ -55,4 +56,11 @@ export type AppointmentSuccessDetails = {
   id: string;
   schedule: string;
   doctor: Doctor;
+};
+
+export type AppointmentListData = {
+  appointments: CreateAppointmentParams[];
+  scheduledCount: number;
+  pendingCount: number;
+  cancelledCount: number;
 };

@@ -1,3 +1,4 @@
+import { AppointmentDetails, ImageType } from "@/types/common";
 import { Gender, Status } from "@/types/enums";
 
 export const Logo: ImageType = {
@@ -78,6 +79,6 @@ export const AppointmentTypeDetails: AppointmentDetails[] = [
   {
     type: "schedule",
     status: Status.SCHEDULED,
-    iconUrl: "/icons/check.svg",
+    iconUrl: "/icons/appointments.svg",
   },
 ];

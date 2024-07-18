@@ -1,4 +1,4 @@
-type ImageType = {
+export type ImageType = {
   src: string;
   alt: string;
   className?: string;
@@ -6,14 +6,16 @@ type ImageType = {
   height?: number;
 };
 
-type Doctor = {
+export type Doctor = {
   name: string;
   avatarIcon: string;
   id: string;
 };
 
-type AppointmentDetails = {
+export type AppointmentDetails = {
   type: string;
   status: string;
   iconUrl: string;
 };
+
+export type StatCardTypes = "create" | "cancel" | "schedule";

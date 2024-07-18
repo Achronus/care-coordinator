@@ -2,7 +2,9 @@ from typing import Annotated
 from app.db import get_doctor_db
 from app.db.crud import CRUD
 
-from .schema import DoctorListResponse, DoctorItem, GetDoctorResponse
+from .schema import DoctorItem
+from .response import DoctorListResponse, GetDoctorResponse
+
 
 from appwrite.exception import AppwriteException
 
@@ -18,7 +20,7 @@ router = APIRouter(prefix="/doctor", tags=["Doctors"])
 )
 def doctors_list(db: Annotated[CRUD, Depends(get_doctor_db)]):
     try:
-        documents = db.get_multiple()
+        response = db.get_multiple()
 
         data = [
             DoctorItem(
@@ -26,7 +28,7 @@ def doctors_list(db: Annotated[CRUD, Depends(get_doctor_db)]):
                 avatarIcon=item["avatarIcon"],
                 id=item["$id"],
             )
-            for item in documents
+            for item in response["documents"]
         ]
 
         return DoctorListResponse(

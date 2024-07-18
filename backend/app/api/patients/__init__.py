@@ -3,13 +3,8 @@ from typing import Annotated
 from app.db import create_file_url, get_patient_db, get_storage_db
 from app.db.crud import CRUD, StorageCRUD
 
-from .schema import (
-    CreatePatient,
-    CreatePatientResponse,
-    PatientOutputData,
-    PostUploadResponse,
-    UploadOutputData,
-)
+from .schema import CreatePatient, PatientOutputData, UploadOutputData
+from .response import CreatePatientResponse, PostUploadResponse
 
 from appwrite.exception import AppwriteException
 from appwrite.permission import Permission

@@ -7,6 +7,7 @@ from appwrite.permission import Permission
 from appwrite.services.users import Users
 from appwrite.services.storage import Storage
 from appwrite.input_file import InputFile
+from appwrite.query import Query
 
 from pydantic import BaseModel, ConfigDict
 
@@ -42,13 +43,13 @@ class CRUD(BaseModel):
             document_id=id,
         )
 
-    def get_multiple(self) -> dict[str, Any]:
+    def get_multiple(self, queries: list[Query] | None = None) -> dict[str, Any]:
         """Retrieves multiple items from a collection."""
-        response = self.db.list_documents(
+        return self.db.list_documents(
             database_id=self.db_id,
             collection_id=self.collection_id,
+            queries=queries,
         )
-        return response["documents"]
 
     def update_one(
         self,

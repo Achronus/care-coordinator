@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Optional
-from app.api.base import SuccessResponse
 
 from .enums import Gender, IdentificationTypes
 
@@ -79,19 +78,7 @@ class PatientOutputData(BaseModel):
     id: str = Field(..., description="The id of the created patient.")
 
 
-class CreatePatientResponse(SuccessResponse):
-    """The response for creating a patient."""
-
-    data: PatientOutputData
-
-
 class UploadOutputData(BaseModel):
     """The output data for the patient file upload."""
 
     id: str = Field(..., description="The id of the created file.")
-
-
-class PostUploadResponse(SuccessResponse):
-    """The response for patient file uploads."""
-
-    data: UploadOutputData

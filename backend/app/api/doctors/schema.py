@@ -1,4 +1,3 @@
-from app.api.base import SuccessResponse
 from pydantic import BaseModel
 
 
@@ -13,15 +12,3 @@ class DoctorItem(DoctorBase):
 
     avatarIcon: str
     id: str
-
-
-class DoctorListResponse(SuccessResponse):
-    """A response for getting a list of doctors."""
-
-    data: list[DoctorItem]
-
-
-class GetDoctorResponse(SuccessResponse):
-    """A response for getting a single doctor."""
-
-    data: DoctorItem

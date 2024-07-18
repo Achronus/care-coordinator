@@ -1,9 +1,13 @@
+from typing import Generic, TypeVar
 from fastapi import status as fastapiStatus
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 
-class SuccessResponse(BaseModel):
-    """A request model for successful API responses. Intended for client responses."""
+T = TypeVar("T", bound=BaseModel)
+
+
+class BaseSuccessResponse(BaseModel):
+    """A base request model for successful API responses. Intended for client responses."""
 
     status: str = Field(
         default="success",
@@ -55,3 +59,9 @@ class ErrorDetails(BaseModel):
         for item in fastapiStatus.__all__:
             if str(status_code) in item:
                 return item.lstrip("HTTP_")
+
+
+class SuccessResponse(BaseSuccessResponse, Generic[T]):
+    """A request model for successful API responses. Intended for client responses. Uses generics to change the data model."""
+
+    data: T

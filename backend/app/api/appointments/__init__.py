@@ -6,18 +6,24 @@ from app.api.doctors.schema import DoctorItem
 from app.db.crud import CRUD
 
 from .schema import (
+    AppointmentCountsData,
     AppointmentOutputData,
     CreateAppointment,
-    CreateAppointmentResponse,
     GetAppointmentData,
+    GetSuccessDetails,
+)
+
+from .response import (
+    CreateAppointmentResponse,
     GetAppointmentResponse,
     GetAppointmentSuccessDetailsResponse,
-    GetSuccessDetails,
+    GetRecentAppointmentsResponse,
 )
 
 from appwrite.exception import AppwriteException
 from appwrite.permission import Permission
 from appwrite.role import Role
+from appwrite.query import Query
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -57,6 +63,67 @@ def create_appointment(
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="An appointment already exists with these details.",
+        )
+
+
+@router.get(
+    "/list",
+    status_code=status.HTTP_200_OK,
+    response_model=GetRecentAppointmentsResponse,
+)
+def get_recent_appointments(db: Annotated[CRUD, Depends(get_appointment_db)]):
+    try:
+        appointments = db.get_multiple(queries=[Query.order_desc("$createdAt")])
+        scheduled = db.get_multiple(
+            queries=[
+                Query.equal("status", "scheduled"),
+                Query.select("$id"),
+            ]
+        )
+        pending = db.get_multiple(
+            queries=[
+                Query.equal("status", "pending"),
+                Query.select("$id"),
+            ]
+        )
+        cancelled = db.get_multiple(
+            queries=[
+                Query.equal("status", "cancelled"),
+                Query.select("$id"),
+            ]
+        )
+
+        appointments = [
+            CreateAppointment(
+                reason=appointment["reason"],
+                notes=appointment["notes"],
+                schedule=appointment["schedule"],
+                status=appointment["status"],
+                cancellationReason=appointment["cancellationReason"],
+                patient=appointment["patient"]["$id"],
+                userId=appointment["userId"],
+                primaryPhysician=appointment["primaryPhysician"]["$id"],
+            )
+            for appointment in appointments["documents"]
+        ]
+
+        data = AppointmentCountsData(
+            scheduledCount=len(scheduled["documents"]),
+            pendingCount=len(pending["documents"]),
+            cancelledCount=len(cancelled["documents"]),
+            appointments=appointments,
+        )
+
+        return GetRecentAppointmentsResponse(
+            code=status.HTTP_200_OK,
+            data=data,
+        )
+
+    except AppwriteException as e:
+        print(e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointments cannot be found.",
         )
 
 

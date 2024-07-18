@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from app.api.appointments.enums import Status
-from app.api.base import SuccessResponse
 from app.api.doctors.schema import DoctorItem
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -30,8 +29,11 @@ class AppointmentBase(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     @field_validator("schedule")
-    def validate_schedule(cls, schedule: datetime) -> str:
-        return schedule.isoformat()
+    def validate_schedule(cls, schedule: str | datetime) -> datetime:
+        if isinstance(schedule, str):
+            return datetime.fromisoformat(schedule)
+
+        return datetime.fromisoformat(schedule.isoformat())
 
 
 class CreateAppointment(AppointmentBase):
@@ -46,12 +48,6 @@ class AppointmentOutputData(BaseModel):
     """The output data for the created appointment."""
 
     id: str = Field(..., description="The id of the created appointment.")
-
-
-class CreateAppointmentResponse(SuccessResponse):
-    """The response for creating an appointment."""
-
-    data: AppointmentOutputData
 
 
 class GetAppointmentData(AppointmentBase, AppointmentOutputData):
@@ -73,12 +69,6 @@ class GetAppointmentData(AppointmentBase, AppointmentOutputData):
         return datetime.fromisoformat(schedule.isoformat())
 
 
-class GetAppointmentResponse(SuccessResponse):
-    """The response for getting a single appointment."""
-
-    data: GetAppointmentData
-
-
 class GetSuccessDetails(AppointmentOutputData):
     """The output data for successfully getting the success appointment details."""
 
@@ -98,7 +88,10 @@ class GetSuccessDetails(AppointmentOutputData):
         return datetime.fromisoformat(schedule.isoformat())
 
 
-class GetAppointmentSuccessDetailsResponse(SuccessResponse):
-    """The response for getting the success appointment details."""
+class AppointmentCountsData(BaseModel):
+    """The output data for appointment counts."""
 
-    data: GetSuccessDetails
+    scheduledCount: int
+    pendingCount: int
+    cancelledCount: int
+    appointments: list[CreateAppointment]

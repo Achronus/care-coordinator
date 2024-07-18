@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";

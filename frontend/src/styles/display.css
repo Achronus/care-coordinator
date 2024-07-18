@@ -17,6 +17,10 @@
     @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-6 shadow-lg;
   }
 
+  .status-badge {
+    @apply flex w-fit items-center gap-2 rounded-full px-4 py-2;
+  }
+
 
   .admin-header {
     @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 shadow-lg xl:px-12;

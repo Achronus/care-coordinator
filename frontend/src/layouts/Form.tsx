@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { ImageType } from "@/types/common";
 import Image from "next/image";
 import Link from "next/link";
 

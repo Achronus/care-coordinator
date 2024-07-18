@@ -70,15 +70,21 @@ export const AppointmentTypeDetails: AppointmentDetails[] = [
     type: "create",
     status: Status.PENDING,
     iconUrl: "/icons/pending.svg",
+    iconColour: "bg-blue-600",
+    textColour: "text-blue-500",
   },
   {
     type: "cancel",
     status: Status.CANCELLED,
     iconUrl: "/icons/cancelled.svg",
+    iconColour: "bg-red-600",
+    textColour: "text-red-500",
   },
   {
     type: "schedule",
     status: Status.SCHEDULED,
     iconUrl: "/icons/appointments.svg",
+    iconColour: "bg-green-600",
+    textColour: "text-green-500",
   },
 ];

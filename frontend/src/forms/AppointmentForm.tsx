@@ -16,6 +16,7 @@ import { title } from "@/lib/utils";
 import { getAppointmentSchema } from "@/lib/validation";
 
 import { APIDataId, CreateAppointmentParams, ErrorMsg } from "@/types/api";
+import { Doctor } from "@/types/common";
 import { AppointmentType, FormFieldType } from "@/types/enums";
 import { AppointmentFormType } from "@/types/forms";
 

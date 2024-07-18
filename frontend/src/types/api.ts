@@ -1,4 +1,5 @@
-import { Doctor } from "./common";
+import { Doctor, PatientCore } from "./common";
+import { Status } from "./enums";
 import { PatientDetails } from "./forms";
 
 export type CreateUser = {
@@ -58,8 +59,20 @@ export type AppointmentSuccessDetails = {
   doctor: Doctor;
 };
 
+export type SingleAppointmentItem = {
+  id: string;
+  reason: string;
+  notes: string;
+  schedule: Date;
+  status: Status;
+  cancellationReason: string;
+  userId: string;
+  patient: PatientCore;
+  physician: Doctor;
+};
+
 export type AppointmentListData = {
-  appointments: CreateAppointmentParams[];
+  appointments: SingleAppointmentItem[];
   scheduledCount: number;
   pendingCount: number;
   cancelledCount: number;

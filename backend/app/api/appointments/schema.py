@@ -3,6 +3,7 @@ from datetime import datetime
 from app.api.appointments.enums import Status
 from app.api.doctors.schema import DoctorItem
 
+from app.api.patients.schema import PatientItem
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
@@ -88,10 +89,44 @@ class GetSuccessDetails(AppointmentOutputData):
         return datetime.fromisoformat(schedule.isoformat())
 
 
+class AppointmentItemData(BaseModel):
+    """The core appointment information."""
+
+    id: str = Field(..., description="The id of the appointment.")
+    reason: str = Field(..., description="The reason for the appointment.")
+    notes: str = Field(..., description="Additional notes related to the appointment.")
+    schedule: datetime = Field(
+        ...,
+        description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
+    )
+    status: Status = Field(..., description="The status of the appointment.")
+    cancellationReason: str | None = Field(
+        None, description="The reason for cancelling the appointment (optional)."
+    )
+    userId: str = Field(
+        ..., description="The ID of the user assigned to the appointment."
+    )
+    patient: PatientItem = Field(
+        ..., description="The core patient information assigned to the appointment."
+    )
+    physician: DoctorItem = Field(
+        ..., description="The core doctor information assigned to the appointment."
+    )
+
+    model_config = ConfigDict(use_enum_values=True)
+
+    @field_validator("schedule")
+    def validate_schedule(cls, schedule: str | datetime) -> datetime:
+        if isinstance(schedule, str):
+            return datetime.fromisoformat(schedule)
+
+        return datetime.fromisoformat(schedule.isoformat())
+
+
 class AppointmentCountsData(BaseModel):
     """The output data for appointment counts."""
 
     scheduledCount: int
     pendingCount: int
     cancelledCount: int
-    appointments: list[CreateAppointment]
+    appointments: list[AppointmentItemData]

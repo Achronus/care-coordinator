@@ -82,3 +82,10 @@ class UploadOutputData(BaseModel):
     """The output data for the patient file upload."""
 
     id: str = Field(..., description="The id of the created file.")
+
+
+class PatientItem(BaseModel):
+    """The core patient data."""
+
+    name: str = Field(..., description="The name of the patient.")
+    id: str = Field(..., description="The id of the patient.")

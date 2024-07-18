@@ -1,5 +1,6 @@
 from typing import Annotated
 
+from app.api.patients.schema import PatientItem
 from app.db import get_appointment_db
 
 from app.api.doctors.schema import DoctorItem
@@ -7,6 +8,7 @@ from app.db.crud import CRUD
 
 from .schema import (
     AppointmentCountsData,
+    AppointmentItemData,
     AppointmentOutputData,
     CreateAppointment,
     GetAppointmentData,
@@ -94,15 +96,23 @@ def get_recent_appointments(db: Annotated[CRUD, Depends(get_appointment_db)]):
         )
 
         appointments = [
-            CreateAppointment(
+            AppointmentItemData(
+                id=appointment["$id"],
                 reason=appointment["reason"],
                 notes=appointment["notes"],
                 schedule=appointment["schedule"],
                 status=appointment["status"],
                 cancellationReason=appointment["cancellationReason"],
-                patient=appointment["patient"]["$id"],
                 userId=appointment["userId"],
-                primaryPhysician=appointment["primaryPhysician"]["$id"],
+                patient=PatientItem(
+                    id=appointment["patient"]["$id"],
+                    name=appointment["patient"]["name"],
+                ),
+                physician=DoctorItem(
+                    id=appointment["primaryPhysician"]["$id"],
+                    name=appointment["primaryPhysician"]["name"],
+                    avatarIcon=appointment["primaryPhysician"]["avatarIcon"],
+                ),
             )
             for appointment in appointments["documents"]
         ]

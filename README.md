@@ -38,12 +38,10 @@ The tech stack centres around `Python` on the backend and `React.js` on the fron
         "code": 200,
         "response": "200_OK",
         "data": {
-            // API data
-            // ...
+            "API": "route data",
         },
         "headers": {
-            // Optional response headers
-            // ...
+            "optional": "response headers",
         }
     }
     ```
@@ -56,8 +54,7 @@ The tech stack centres around `Python` on the backend and `React.js` on the fron
         "response": "404_NOT_FOUND",
         "message": "User does not exist.",
         "headers": {
-            // Optional response headers
-            // ... 
+            "optional": "response headers",
         }
     }
     ```

@@ -1,1 +1,3 @@
-# A FastAPI Backend For The Project
+# Python and FastAPI backend
+
+It's pure poetry 🎶

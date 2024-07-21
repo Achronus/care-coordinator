@@ -52,7 +52,7 @@ export const RegistrationFormValidation = z.object({
       (phone) => validator.isMobilePhone(phone, "any", { strictMode: true }),
       { message: "Invalid phone number" }
     ),
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  primaryPhysician: z.string().min(2, "Please select a doctor"),
   insuranceProvider: z
     .string()
     .min(2, "Insurance name must be at least 2 characters")
@@ -96,7 +96,7 @@ export const RegistrationFormValidation = z.object({
 });
 
 export const CreateAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  primaryPhysician: z.string().min(2, "Please select a doctor"),
   schedule: z.coerce.date(),
   reason: z
     .string()
@@ -110,7 +110,7 @@ export const CreateAppointmentSchema = z.object({
 });
 
 export const ScheduleAppointmentSchema = z.object({
-  primaryPhysician: z.string().min(2, "Select at least one doctor"),
+  primaryPhysician: z.string().min(2, "Please select a doctor"),
   reason: z
     .string()
     .min(2, "Reason must be at least 2 characters")

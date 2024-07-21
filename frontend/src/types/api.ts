@@ -30,12 +30,21 @@ export type CreateAppointmentParams = {
   reason: string;
   status: string;
   notes?: string;
+  cancellationReason?: string;
 };
 
-export type UpdateAppointmentParams = {
-  appointmentId: string;
-  userId: string;
-  type: string;
+export type ScheduleAppointmentParams = {
+  id: string;
+  primaryPhysician: string;
+  reason: string;
+  schedule: Date;
+  status: string;
+};
+
+export type CancelAppointmentParams = {
+  id: string;
+  status: string;
+  cancellationReason?: string;
 };
 
 export type ErrorMsg = {

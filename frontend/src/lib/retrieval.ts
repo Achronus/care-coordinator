@@ -42,7 +42,8 @@ export async function GetData<T>(url: string): Promise<DataResponse<T>> {
 
 export async function PostData<T>(
   url: string,
-  postData: object
+  postData: object,
+  method: string = "POST"
 ): Promise<DataResponse<T>> {
   let data: T | null = null;
   let error: ErrorMsg | null = null;
@@ -52,7 +53,7 @@ export async function PostData<T>(
     const response = await fetch(
       `${process.env.FASTAPI_CONNECTION_URL}${url}`,
       {
-        method: "POST",
+        method: method,
         body: JSON.stringify(postData),
         headers: {
           Accept: "application/json",

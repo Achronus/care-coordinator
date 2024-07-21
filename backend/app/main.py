@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from app import auth
 from app.api import doctors, patients, appointments
 
-from app.api.base import ErrorDetails
+from app.api.responses import ErrorResponse
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -38,5 +38,5 @@ app.add_middleware(
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
-    details = ErrorDetails(code=exc.status_code, message=exc.detail).model_dump()
+    details = ErrorResponse(code=exc.status_code, message=exc.detail).model_dump()
     return JSONResponse(details, status_code=exc.status_code)

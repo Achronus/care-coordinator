@@ -1,4 +1,4 @@
-from app.api.base import SuccessResponse
+from app.api.responses import SuccessResponse
 
 from app.api.patients.schema import PatientOutputData, UploadOutputData
 

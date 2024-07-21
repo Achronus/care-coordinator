@@ -1,4 +1,5 @@
-from app.api.base import SuccessResponse
+from app.api.responses import SuccessResponse
+
 from pydantic import BaseModel, Field
 
 

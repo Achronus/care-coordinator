@@ -1,15 +1,15 @@
 from app.api.appointments.schema import (
     AppointmentCountsData,
-    AppointmentOutputData,
+    AppointmentIdData,
     GetAppointmentData,
     GetSuccessDetails,
 )
 
-from app.api.base import SuccessResponse
+from app.api.responses import SuccessResponse
 
 
-class CreateAppointmentResponse(SuccessResponse[AppointmentOutputData]):
-    """The response for creating an appointment."""
+class AppointmentIdResponse(SuccessResponse[AppointmentIdData]):
+    """A response for returning the appointment ID."""
 
     pass
 
@@ -28,11 +28,5 @@ class GetAppointmentSuccessDetailsResponse(SuccessResponse[GetSuccessDetails]):
 
 class GetRecentAppointmentsResponse(SuccessResponse[AppointmentCountsData]):
     """The response for getting recent appointments."""
-
-    pass
-
-
-class CancelAppointmentResponse(SuccessResponse[AppointmentOutputData]):
-    """The response for cancelling an appointment."""
 
     pass

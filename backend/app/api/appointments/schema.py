@@ -45,13 +45,13 @@ class CreateAppointment(AppointmentBase):
     )
 
 
-class AppointmentOutputData(BaseModel):
-    """The output data for the created appointment."""
+class AppointmentIdData(BaseModel):
+    """The output data containing the appointments ID."""
 
     id: str = Field(..., description="The id of the appointment.")
 
 
-class GetAppointmentData(AppointmentBase, AppointmentOutputData):
+class GetAppointmentData(AppointmentBase, AppointmentIdData):
     """The output data for getting a single appointment."""
 
     doctor: DoctorItem = Field(
@@ -70,7 +70,7 @@ class GetAppointmentData(AppointmentBase, AppointmentOutputData):
         return datetime.fromisoformat(schedule.isoformat())
 
 
-class GetSuccessDetails(AppointmentOutputData):
+class GetSuccessDetails(AppointmentIdData):
     """The output data for successfully getting the success appointment details."""
 
     doctor: DoctorItem = Field(

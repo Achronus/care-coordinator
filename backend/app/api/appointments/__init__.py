@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from app.api.patients.schema import PatientItem
+from app.api.responses.messages import HTTP_ERROR_404, HTTP_ERROR_409
 from app.db import get_appointment_db
 
 from app.api.doctors.schema import DoctorItem
@@ -10,18 +11,17 @@ from .schema import (
     CancelAppointment,
     AppointmentCountsData,
     AppointmentItemData,
-    AppointmentOutputData,
+    AppointmentIdData,
     CreateAppointment,
     GetAppointmentData,
     GetSuccessDetails,
 )
 
 from .response import (
-    CancelAppointmentResponse,
-    CreateAppointmentResponse,
     GetAppointmentResponse,
     GetAppointmentSuccessDetailsResponse,
     GetRecentAppointmentsResponse,
+    AppointmentIdResponse,
 )
 
 from appwrite.exception import AppwriteException
@@ -38,7 +38,8 @@ router = APIRouter(prefix="/appointment", tags=["Appointments"])
 @router.post(
     "/create",
     status_code=status.HTTP_201_CREATED,
-    response_model=CreateAppointmentResponse,
+    response_model=AppointmentIdResponse,
+    responses=HTTP_ERROR_409,
 )
 def create_appointment(
     appointment: CreateAppointment,
@@ -55,9 +56,9 @@ def create_appointment(
             ],
         )
 
-        return CreateAppointmentResponse(
+        return AppointmentIdResponse(
             code=status.HTTP_201_CREATED,
-            data=AppointmentOutputData(
+            data=AppointmentIdData(
                 id=response["$id"],
             ),
         )
@@ -74,6 +75,7 @@ def create_appointment(
     "/list",
     status_code=status.HTTP_200_OK,
     response_model=GetRecentAppointmentsResponse,
+    responses=HTTP_ERROR_404,
 )
 def get_recent_appointments(db: Annotated[CRUD, Depends(get_appointment_db)]):
     try:
@@ -143,6 +145,7 @@ def get_recent_appointments(db: Annotated[CRUD, Depends(get_appointment_db)]):
     "/{id}",
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentResponse,
+    responses=HTTP_ERROR_404,
 )
 def get_appointment(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
     try:
@@ -180,6 +183,7 @@ def get_appointment(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
     "/{id}/success",
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentSuccessDetailsResponse,
+    responses=HTTP_ERROR_404,
 )
 def get_success_details(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
     try:
@@ -212,7 +216,8 @@ def get_success_details(id: str, db: Annotated[CRUD, Depends(get_appointment_db)
 @router.patch(
     "/cancel",
     status_code=status.HTTP_200_OK,
-    response_model=CancelAppointmentResponse,
+    response_model=AppointmentIdResponse,
+    responses=HTTP_ERROR_404,
 )
 def cancel_appointment(
     details: CancelAppointment, db: Annotated[CRUD, Depends(get_appointment_db)]

@@ -98,11 +98,7 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
 
   return (
     <Form {...form}>
-      <form
-        method="POST"
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 flex-1"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
         <section className="mb-12 space-y-4">
           <h1 className="header">Last Step! 🚀</h1>
           <p className="text-dark-700">Request a new appointment in seconds.</p>

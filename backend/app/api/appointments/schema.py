@@ -140,3 +140,18 @@ class CancelAppointment(BaseModel):
         ..., description="The reason for cancelling the appointment."
     )
     status: Status = Field(..., description="The status of the appointment.")
+
+
+class ScheduleAppointment(BaseModel):
+    """A model for scheduling an appointment."""
+
+    id: str = Field(..., description="The id of the appointment.")
+    primaryPhysician: str = Field(
+        ..., description="The ID of the doctor assigned to the appointment."
+    )
+    reason: str = Field(..., description="The reason for the appointment.")
+    schedule: datetime = Field(
+        ...,
+        description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
+    )
+    status: Status = Field(..., description="The status of the appointment.")

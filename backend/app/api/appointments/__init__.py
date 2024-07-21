@@ -15,6 +15,7 @@ from .schema import (
     CreateAppointment,
     GetAppointmentData,
     GetSuccessDetails,
+    ScheduleAppointment,
 )
 
 from .response import (
@@ -231,9 +232,40 @@ def cancel_appointment(
             },
         )
 
-        return CancelAppointmentResponse(
+        return AppointmentIdResponse(
             code=status.HTTP_200_OK,
-            data=AppointmentOutputData(id=response["$id"]),
+            data=AppointmentIdData(id=response["$id"]),
+        )
+
+    except AppwriteException as e:
+        print(e.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment doesn't exist.",
+        )
+
+
+@router.patch(
+    "/schedule",
+    status_code=status.HTTP_200_OK,
+    response_model=AppointmentIdResponse,
+    responses=HTTP_ERROR_404,
+)
+def schedule_appointment(
+    details: ScheduleAppointment, db: Annotated[CRUD, Depends(get_appointment_db)]
+):
+    try:
+        data = details.model_dump()
+        data.pop("id")
+
+        response = db.update_one(
+            details.id,
+            data=data,
+        )
+
+        return AppointmentIdResponse(
+            code=status.HTTP_200_OK,
+            data=AppointmentIdData(id=response["$id"]),
         )
 
     except AppwriteException as e:

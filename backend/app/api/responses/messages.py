@@ -1,40 +1,7 @@
-from . import MessageResponse
+from app.api.responses import MessageResponse, build_response, get_code_status
 
 from pydantic import BaseModel, Field, field_validator, validate_call
 from fastapi import status
-
-
-@validate_call
-def build_response(code: int, no_strip: bool = False) -> str:
-    """A utility function for building a string representation of a response code."""
-    for item in status.__all__:
-        if str(code) in item:
-            if no_strip:
-                return item
-
-            return item.lstrip("HTTP_")
-
-    raise ValueError(
-        f"'{code}' isn't a valid HTTP response code! Try 'fastapi.status' for a list of valid response codes"
-    )
-
-
-@validate_call
-def get_code_status(code: int) -> str:
-    """A utility function for retrieving the code status based on the code."""
-    # Validate code exists
-    _ = build_response(code)
-
-    code_type_map = {
-        "info": range(100, 200),
-        "success": range(200, 300),
-        "redirect": range(300, 400),
-        "error": range(400, 600),
-    }
-
-    for key, code_range in code_type_map.items():
-        if code in code_range:
-            return key
 
 
 class HTTPMessage(BaseModel):

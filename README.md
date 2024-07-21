@@ -67,8 +67,8 @@ The tech stack centres around `Python` on the backend and `React.js` on the fron
 
 ## Remaining
 
-This section focuses on what is left to do before the project is ready for deployment (~90% complete). What's left:
+This section focuses on what is left to do before the project is ready for deployment (~92% complete). What's left:
 
-- Admin dashboard
+- Refactor state management using [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
 - JWT tokens
 - SMS Notifications

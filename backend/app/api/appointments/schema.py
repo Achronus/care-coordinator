@@ -155,3 +155,10 @@ class ScheduleAppointment(BaseModel):
         description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
     )
     status: Status = Field(..., description="The status of the appointment.")
+
+    @field_validator("schedule")
+    def validate_schedule(cls, schedule: str | datetime) -> datetime:
+        if isinstance(schedule, str):
+            return datetime.fromisoformat(schedule)
+
+        return datetime.fromisoformat(schedule.isoformat())

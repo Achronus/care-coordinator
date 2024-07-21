@@ -8,24 +8,4 @@
   .sub-container {
     @apply mx-auto flex size-full flex-col py-10;
   }
-
-  .two-columns {
-    @apply grid gap-6 md:grid-cols-2 justify-center items-center;
-  }
-
-  .three-columns {
-    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-center items-center;
-  }
-
-  .four-columns {
-    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-4 justify-center items-center;
-  }
-
-  .five-columns {
-    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 justify-center items-center;
-  }
-
-  .six-columns {
-    @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 justify-center items-center;
-  }
 }

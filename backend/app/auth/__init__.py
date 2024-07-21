@@ -50,7 +50,7 @@ def create_user(
     db: Annotated[UserCRUD, Depends(get_users_db)],
 ):
     try:
-        result = db.create_one(**user.model_dump())
+        result = db.create_one(user.model_dump())
         return UserResponse(
             code=status.HTTP_201_CREATED,
             data=CoreUserOutput(

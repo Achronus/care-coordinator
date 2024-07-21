@@ -115,6 +115,10 @@ export const ScheduleAppointmentSchema = z.object({
     .string()
     .min(2, "Reason must be at least 2 characters")
     .max(300, "Reasons must be at most 300 characters"),
+  notes: z
+    .string()
+    .max(300, "Reason must be at most 300 characters")
+    .optional(),
   schedule: z.coerce.date(),
 });
 

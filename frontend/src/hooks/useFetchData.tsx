@@ -1,21 +1,26 @@
-import { GetData } from "@/lib/retrieval";
-import { ErrorMsg } from "@/types/api";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-export default function useGetApiData<T>(
+import FetchClient from "@/lib/fetch-client";
+import { ErrorMsg } from "@/types/api";
+
+export default function useFetchData<T>(
   url: string,
-  dependencies: any[] = []
+  dependencies: any[] = [],
+  headers?: HeadersInit,
+  rootUrl?: string
 ) {
   const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ErrorMsg | null>(null);
 
+  const fetch = useMemo(() => new FetchClient(rootUrl), [rootUrl]);
+
   const callbackMemoized = useCallback(async () => {
-    const { data, isLoading, error } = await GetData<T>(url);
+    const { data, isLoading, error } = await fetch.get<T>(url, headers);
     setError(error);
     setData(data);
     setIsLoading(isLoading);
-  }, [url].concat(dependencies));
+  }, [url, headers].concat(dependencies));
 
   useEffect(() => {
     callbackMemoized();

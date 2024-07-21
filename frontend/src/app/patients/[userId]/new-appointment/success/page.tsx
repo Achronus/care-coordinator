@@ -2,7 +2,7 @@
 
 import { Loading } from "@/components/Loading";
 import { Button } from "@/components/ui/button";
-import useGetApiData from "@/hooks/useGetApiData";
+import useFetchData from "@/hooks/useFetchData";
 import { cn, formatDateTime } from "@/lib/utils";
 import { AppointmentSuccessDetails } from "@/types/api";
 
@@ -14,7 +14,7 @@ const Success = ({ params }: { params: { userId: string } }) => {
   const searchParams = useSearchParams();
   const appointmentId = searchParams.get("appointmentId") ?? "";
 
-  const { data: details, isLoading } = useGetApiData<AppointmentSuccessDetails>(
+  const { data: details, isLoading } = useFetchData<AppointmentSuccessDetails>(
     `api/appointment/${appointmentId}/success`
   );
 

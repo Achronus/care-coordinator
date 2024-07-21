@@ -3,18 +3,19 @@
 import { Loading } from "@/components/Loading";
 import StatCard from "@/components/StatCard";
 import { AppointmentTable } from "@/components/appointments";
-import useGetApiData from "@/hooks/useGetApiData";
+import useFetchData from "@/hooks/useFetchData";
 import { AppointmentListData } from "@/types/api";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const Admin = () => {
-  const {
-    data: appointmentData,
-    isLoading,
-    error,
-  } = useGetApiData<AppointmentListData>("api/appointment/list");
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success") ?? false;
+
+  const { data: appointmentData, isLoading } =
+    useFetchData<AppointmentListData>("api/appointment/list", [success]);
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col space-y-14">
@@ -56,10 +57,7 @@ const Admin = () => {
               </section>
 
               <section>
-                <AppointmentTable
-                  // columns={columns}
-                  data={appointmentData.appointments}
-                />
+                <AppointmentTable data={appointmentData.appointments} />
               </section>
             </>
           )

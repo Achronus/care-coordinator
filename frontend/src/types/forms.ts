@@ -33,3 +33,14 @@ export type AppointmentFormType = {
   schedule?: Date;
   cancellationReason?: string;
 };
+
+export type CancellationFormType = {
+  cancellationReason: string;
+};
+
+export type ScheduleFormType = {
+  primaryPhysician: string;
+  reason: string;
+  notes?: string;
+  schedule?: Date;
+};

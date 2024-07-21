@@ -6,9 +6,9 @@ import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import useGetApiData from "@/hooks/useGetApiData";
+import useFetchData from "@/hooks/useFetchData";
 import { AppointmentTypeDetails } from "@/lib/constants";
-import { PostData } from "@/lib/retrieval";
+import FetchClient from "@/lib/fetch-client";
 import { ScheduleAppointmentSchema } from "@/lib/validation";
 
 import {
@@ -44,11 +44,12 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
   });
   const router = useRouter();
   const searchParams = useSearchParams();
+  const fetch = new FetchClient();
 
   const appointmentId = searchParams.get("appointmentId") ?? "";
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<Doctor[]>("api/doctor/list");
+    useFetchData<Doctor[]>("api/doctor/list");
 
   const form = useForm<z.infer<typeof ScheduleAppointmentSchema>>({
     resolver: zodResolver(ScheduleAppointmentSchema),
@@ -74,12 +75,9 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
           notes: formValues.notes ?? "",
         };
 
-        console.log(appointmentData);
-
-        const { data: appointment, error } = await PostData<APIDataId>(
+        const { data: appointment, error } = await fetch.patch<APIDataId>(
           "api/appointment/schedule",
-          appointmentData,
-          "PATCH"
+          appointmentData
         );
 
         if (appointment) {

@@ -13,7 +13,7 @@ import {
 import AppointmentForm from "@/forms/appointment";
 import { cn, title } from "@/lib/utils";
 import { SingleAppointmentItem } from "@/types/api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type AppointmentModalProps = {
@@ -28,7 +28,10 @@ const AppointmentModal = ({
   description,
 }: AppointmentModalProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [open, setOpen] = useState(false);
+  const success = searchParams.get("success") ?? false;
 
   useEffect(() => {
     if (!open) {
@@ -36,7 +39,11 @@ const AppointmentModal = ({
     } else {
       router.push(`/admin?appointmentId=${appointment!.id}`);
     }
-  }, [open]);
+
+    if (success) {
+      setOpen(false);
+    }
+  }, [open, success]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -59,7 +66,7 @@ const AppointmentModal = ({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <AppointmentForm type={type} />
+        <AppointmentForm type={type} appointment={appointment!} />
       </DialogContent>
     </Dialog>
   );

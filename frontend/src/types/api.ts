@@ -37,6 +37,7 @@ export type ScheduleAppointmentParams = {
   id: string;
   primaryPhysician: string;
   reason: string;
+  notes: string;
   schedule: Date;
   status: string;
 };

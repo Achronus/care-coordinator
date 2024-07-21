@@ -60,7 +60,7 @@ class FetchClient {
     return this._makeRequest<T>("DELETE", url, null, headers);
   }
 
-  private _setHeaders(isFormData: boolean, headers: HeadersInit | null) {
+  private _setHeaders(isFormData: boolean, headers?: HeadersInit | null) {
     if (headers) {
       return headers;
     }
@@ -77,7 +77,7 @@ class FetchClient {
     method: string,
     url: string,
     apiData?: object | FormData | null,
-    headers: HeadersInit | null = {}
+    headers?: HeadersInit | null
   ): Promise<DataResponse<T>> {
     let data: T | null = null;
     let error: ErrorMsg | null = null;

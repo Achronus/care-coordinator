@@ -9,7 +9,6 @@ import { Form, FormControl } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
-import useGetApiData from "@/hooks/useGetApiData";
 
 import { RegistrationFormDefaults } from "@/lib/constants";
 import { PostData, PostFormData } from "@/lib/retrieval";
@@ -22,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import useFetchData from "@/hooks/useFetchData";
 import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,7 +42,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
   });
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<Doctor[]>("api/doctor/list");
+    useFetchData<Doctor[]>("api/doctor/list");
 
   const onSubmit = async (
     formValues: z.infer<typeof RegistrationFormValidation>

@@ -15,13 +15,21 @@ function serverErrorMsg(): ErrorMsg {
   };
 }
 
-export async function GetData<T>(url: string): Promise<DataResponse<T>> {
+export async function GetData<T>(
+  url: string,
+  store: boolean = true
+): Promise<DataResponse<T>> {
   let data: T | null = null;
   let isLoading = true;
   let error: ErrorMsg | null = null;
 
   try {
-    const response = await fetch(`${process.env.FASTAPI_CONNECTION_URL}${url}`);
+    const response = await fetch(
+      `${process.env.FASTAPI_CONNECTION_URL}${url}`,
+      {
+        cache: store ? "force-cache" : "no-store",
+      }
+    );
     const output = await response.json();
 
     if (!Object.hasOwn(output, "data")) {

@@ -150,6 +150,9 @@ class ScheduleAppointment(BaseModel):
         ..., description="The ID of the doctor assigned to the appointment."
     )
     reason: str = Field(..., description="The reason for the appointment.")
+    notes: str | None = Field(
+        None, description="Additional notes related to the appointment."
+    )
     schedule: datetime = Field(
         ...,
         description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",

@@ -6,7 +6,7 @@ import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import useGetApiData from "@/hooks/useGetApiData";
+import useFetchData from "@/hooks/useFetchData";
 import {
   AppointmentFormDefaults,
   AppointmentTypeDetails,
@@ -41,7 +41,7 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
   const router = useRouter();
 
   const { data: doctors, isLoading: doctorsLoading } =
-    useGetApiData<Doctor[]>("api/doctor/list");
+    useFetchData<Doctor[]>("api/doctor/list");
 
   const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),

@@ -21,6 +21,7 @@ The tech stack centres around `Python` on the backend and `React.js` on the fron
 ### Frontend
 
 - [Next.js](https://nextjs.org/) - our React.js frontend framework
+- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction) - for API data state management
 - [Zod](https://zod.dev/) - for form validation
 - [Shadcn/ui](https://ui.shadcn.com/) - for building our components
 - [Typescript](https://www.typescriptlang.org/) - for prop type safety and validation
@@ -67,8 +68,8 @@ The tech stack centres around `Python` on the backend and `React.js` on the fron
 
 ## Remaining
 
-This section focuses on what is left to do before the project is ready for deployment (~92% complete). What's left:
+This section focuses on what is left to do before the project is ready for deployment (~94% complete). What's left:
 
-- Refactor state management using [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- Add [NextAuth](https://next-auth.js.org/) for client side user authentication
 - JWT tokens
 - SMS Notifications

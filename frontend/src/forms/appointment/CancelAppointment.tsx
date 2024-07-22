@@ -4,12 +4,11 @@ import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
+import { useProjectStore } from "@/hooks/useProjectStore";
 import { AppointmentTypeDetails } from "@/lib/constants";
-import { PostData } from "@/lib/retrieval";
 import { CancelAppointmentSchema } from "@/lib/validation";
 
 import {
-  APIDataId,
   CancelAppointmentParams,
   ErrorMsg,
   SingleAppointmentItem,
@@ -44,6 +43,12 @@ const CancelAppointment = ({ appointment }: CancelAppointmentProps) => {
     defaultValues: formData,
   });
 
+  const {
+    appointmentId: appointmentResponse,
+    appointmentError,
+    cancelAppointment,
+  } = useProjectStore();
+
   const onSubmit = async (
     formValues: z.infer<typeof CancelAppointmentSchema>
   ) => {
@@ -58,19 +63,15 @@ const CancelAppointment = ({ appointment }: CancelAppointmentProps) => {
           status: details!.status,
         };
 
-        const { data: appointment, error } = await PostData<APIDataId>(
-          "api/appointment/cancel",
-          appointmentData,
-          "PATCH"
-        );
+        cancelAppointment(appointmentData);
 
-        if (appointment) {
+        if (appointmentResponse) {
           form.reset();
           router.push("/admin?success=true");
         } else {
           setFormData(formValues);
           setIsLoading(false);
-          setError(error);
+          setError(appointmentError);
         }
       }
     } catch (error: any) {

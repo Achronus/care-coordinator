@@ -11,17 +11,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SelectItem } from "@/components/ui/select";
 
 import { RegistrationFormDefaults } from "@/lib/constants";
-import { PostData, PostFormData } from "@/lib/retrieval";
 import { RegistrationFormValidation } from "@/lib/validation";
-import { APIDataId, CreatePatient, ErrorMsg } from "@/types/api";
+import { CreatePatient, ErrorMsg } from "@/types/api";
 import { FormFieldType, Gender, IdentificationTypes } from "@/types/enums";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import useFetchData from "@/hooks/useFetchData";
+import { useProjectStore } from "@/hooks/useProjectStore";
 import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,8 +40,20 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     defaultValues: formData,
   });
 
-  const { data: doctors, isLoading: doctorsLoading } =
-    useFetchData<Doctor[]>("api/doctor/list");
+  const {
+    doctors,
+    doctorsLoading,
+    fetchDoctors,
+    patient,
+    fileDetails,
+    patientError,
+    uploadFile,
+    addPatient,
+  } = useProjectStore();
+
+  useEffect(() => {
+    fetchDoctors();
+  }, [fetchDoctors]);
 
   const onSubmit = async (
     formValues: z.infer<typeof RegistrationFormValidation>
@@ -57,8 +68,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
       fileData.append("file", formValues.identificationDocument[0]);
     }
 
-    const { data: fileDetails, error: fileError } =
-      await PostFormData<APIDataId>("api/patient/upload", fileData);
+    uploadFile(fileData);
 
     const { identificationDocument, primaryPhysician, ...formValuesCopy } =
       formValues;
@@ -74,10 +84,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
         )!.id,
       };
 
-      const { data: patient, error: patientError } = await PostData<APIDataId>(
-        "api/patient/register",
-        fullFormData
-      );
+      addPatient(fullFormData);
 
       if (patient) {
         router.push(
@@ -91,7 +98,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     } else {
       setFormData(formValues);
       setFormSubmitLoading(false);
-      setFormError(fileError);
+      setFormError(patientError);
     }
   };
 

@@ -4,7 +4,7 @@ import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
-import { PostData } from "@/lib/retrieval";
+import { post } from "@/lib/retrieval";
 
 import { UserFormValidation } from "@/lib/validation";
 import { ErrorMsg, User } from "@/types/api";
@@ -29,8 +29,7 @@ const UserForm = () => {
 
   const onSubmit = async (formValues: z.infer<typeof UserFormValidation>) => {
     setIsLoading(true);
-
-    const { data: user, error } = await PostData<User>(
+    const { data: user, error: userError } = await post<User>(
       "auth/user/register",
       formValues
     );
@@ -40,7 +39,7 @@ const UserForm = () => {
     } else {
       setFormData(formValues);
       setIsLoading(false);
-      setError(error);
+      setError(userError);
     }
   };
 

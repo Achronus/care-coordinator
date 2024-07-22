@@ -6,13 +6,11 @@ import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import useFetchData from "@/hooks/useFetchData";
+import { useProjectStore } from "@/hooks/useProjectStore";
 import { AppointmentTypeDetails } from "@/lib/constants";
-import FetchClient from "@/lib/fetch-client";
 import { ScheduleAppointmentSchema } from "@/lib/validation";
 
 import {
-  APIDataId,
   ErrorMsg,
   ScheduleAppointmentParams,
   SingleAppointmentItem,
@@ -44,12 +42,16 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
   });
   const router = useRouter();
   const searchParams = useSearchParams();
-  const fetch = new FetchClient();
 
   const appointmentId = searchParams.get("appointmentId") ?? "";
 
-  const { data: doctors, isLoading: doctorsLoading } =
-    useFetchData<Doctor[]>("api/doctor/list");
+  const {
+    doctors,
+    doctorsLoading,
+    appointmentId: appointmentResponse,
+    appointmentError,
+    scheduleAppointment,
+  } = useProjectStore();
 
   const form = useForm<z.infer<typeof ScheduleAppointmentSchema>>({
     resolver: zodResolver(ScheduleAppointmentSchema),
@@ -75,18 +77,15 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
           notes: formValues.notes ?? "",
         };
 
-        const { data: appointment, error } = await fetch.patch<APIDataId>(
-          "api/appointment/schedule",
-          appointmentData
-        );
+        scheduleAppointment(appointmentData);
 
-        if (appointment) {
+        if (appointmentResponse) {
           form.reset();
           router.push("/admin?success=true");
         } else {
           setFormData(formValues);
           setIsLoading(false);
-          setError(error);
+          setError(appointmentError);
         }
       }
     } catch (error: any) {
@@ -112,7 +111,7 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
           label="Doctor"
           placeholder="Select a doctor"
         >
-          {doctorsLoading && !doctors ? (
+          {doctorsLoading ? (
             <SelectItem value="loading">
               <Loading width={10} height={10} />
             </SelectItem>

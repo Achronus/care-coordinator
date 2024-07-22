@@ -6,15 +6,14 @@ import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import useFetchData from "@/hooks/useFetchData";
+import { useProjectStore } from "@/hooks/useProjectStore";
 import {
   AppointmentFormDefaults,
   AppointmentTypeDetails,
 } from "@/lib/constants";
-import { PostData } from "@/lib/retrieval";
 import { CreateAppointmentSchema } from "@/lib/validation";
 
-import { APIDataId, CreateAppointmentParams, ErrorMsg } from "@/types/api";
+import { CreateAppointmentParams, ErrorMsg } from "@/types/api";
 import { Doctor } from "@/types/common";
 import { FormFieldType } from "@/types/enums";
 import { AppointmentFormType } from "@/types/forms";
@@ -22,7 +21,7 @@ import { AppointmentFormType } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -40,8 +39,18 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
   );
   const router = useRouter();
 
-  const { data: doctors, isLoading: doctorsLoading } =
-    useFetchData<Doctor[]>("api/doctor/list");
+  const {
+    doctors,
+    doctorsLoading,
+    fetchDoctors,
+    appointmentId,
+    appointmentError,
+    addAppointment,
+  } = useProjectStore();
+
+  useEffect(() => {
+    fetchDoctors();
+  }, [fetchDoctors]);
 
   const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),
@@ -68,19 +77,16 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
           notes: formValues.notes,
         };
 
-        const { data: appointment, error } = await PostData<APIDataId>(
-          "api/appointment/create",
-          appointmentData
-        );
+        addAppointment(appointmentData);
 
-        if (appointment) {
+        if (appointmentId) {
           router.push(
-            `/patients/${userId}/new-appointment/success?appointmentId=${appointment.id}`
+            `/patients/${userId}/new-appointment/success?appointmentId=${appointmentId}`
           );
         } else {
           setFormData(formValues);
           setIsLoading(false);
-          setError(error);
+          setError(appointmentError);
         }
       }
     } catch (error: any) {

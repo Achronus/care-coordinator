@@ -17,9 +17,11 @@ function serverErrorMsg(): ErrorMsg {
 
 class FetchClient {
   private rootUrl: string;
+  private prefix: string;
 
-  constructor(rootUrl: string = `${process.env.FASTAPI_CONNECTION_URL}`) {
-    this.rootUrl = rootUrl;
+  constructor(rootUrl?: string, prefix?: string) {
+    this.rootUrl = rootUrl ?? `${process.env.FASTAPI_CONNECTION_URL}`;
+    this.prefix = prefix ?? "";
   }
 
   public async get<T>(
@@ -96,7 +98,10 @@ class FetchClient {
           : JSON.stringify(apiData);
       }
 
-      const response = await fetch(`${this.rootUrl}${url}`, config);
+      const response = await fetch(
+        `${this.rootUrl}${this.prefix}${url}`,
+        config
+      );
       const output = await response.json();
 
       if (!Object.hasOwn(output, "data")) {

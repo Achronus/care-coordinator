@@ -6,7 +6,8 @@ authors = ["Ryan Partridge <rpartridge101@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-app-start = "app.start:run"
+run-dev = "app.start:development"
+run-prod = "app.start:production"
 
 [tool.poetry.dependencies]
 python = "^3.12"

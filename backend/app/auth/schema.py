@@ -27,16 +27,3 @@ class UserResponse(SuccessResponse):
     """The response received by creating and retrieving the user."""
 
     data: CoreUserOutput
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    name: str | None = None
-
-
-class UserInDB(UserBase):
-    password: str

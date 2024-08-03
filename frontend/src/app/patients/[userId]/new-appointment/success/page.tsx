@@ -1,25 +1,38 @@
 "use client";
 
+import { getSuccessDetails } from "@/actions/appointment.actions";
 import { Loading } from "@/components/Loading";
 import { Button } from "@/components/ui/button";
-import { useProjectStore } from "@/hooks/useProjectStore";
 import { cn, formatDateTime } from "@/lib/utils";
+import { AppointmentSuccessDetails } from "@/types/api";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const Success = ({ params }: { params: { userId: string } }) => {
   const searchParams = useSearchParams();
   const appointmentId = searchParams.get("appointmentId") ?? "";
+  const patientId = searchParams.get("patientId") ?? "";
 
-  const { appointment, appointmentsLoading, getSuccessDetails } =
-    useProjectStore();
+  const [details, setDetails] = useState<AppointmentSuccessDetails | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getSuccessDetails(appointmentId);
-  }, [getSuccessDetails]);
+    const fetchData = async () => {
+      const { appointment } = await getSuccessDetails(appointmentId);
+      setDetails(appointment);
+
+      if (appointment) {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <main className="flex flex-col h-screen max-h-screen px-[5%]">
@@ -50,23 +63,21 @@ const Success = ({ params }: { params: { userId: string } }) => {
         </section>
 
         <section className="request-details">
-          {appointmentsLoading ? (
+          {isLoading ? (
             <Loading />
           ) : (
-            appointment && (
+            details && (
               <>
                 <p>Requested appointment details:</p>
                 <div className="flex items-center gap-3">
                   <Image
-                    src={appointment.doctor.avatarIcon}
+                    src={details.doctor.avatarIcon}
                     width={100}
                     height={100}
                     alt="doctor"
                     className="size-6"
                   />
-                  <p className="whitespace-nowrap">
-                    Dr. {appointment.doctor.name}
-                  </p>
+                  <p className="whitespace-nowrap">Dr. {details.doctor.name}</p>
                 </div>
                 <div className="flex gap-2">
                   <Image
@@ -75,7 +86,7 @@ const Success = ({ params }: { params: { userId: string } }) => {
                     height={24}
                     alt="calendar"
                   />
-                  <p>{formatDateTime(appointment.schedule)}</p>
+                  <p>{formatDateTime(details.schedule)}</p>
                 </div>
               </>
             )
@@ -83,7 +94,9 @@ const Success = ({ params }: { params: { userId: string } }) => {
         </section>
 
         <Button variant="outline" className="shad-primary-btn" asChild>
-          <Link href={`/patients/${params.userId}/new-appointment`}>
+          <Link
+            href={`/patients/${params.userId}/new-appointment?patientId=${patientId}`}
+          >
             Create New Appointment
           </Link>
         </Button>

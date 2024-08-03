@@ -22,13 +22,15 @@ const FormLayout = ({
     <>
       <section className="container remove-scrollbar">
         <div className={cn("sub-container", containerStyles)}>
-          <Image
-            src={logo.src}
-            height={logo.height}
-            width={logo.width}
-            alt={logo.alt}
-            className={cn("mb-12 h-10 w-fit", logo.className ?? "")}
-          />
+          <Link href="/">
+            <Image
+              src={logo.src}
+              height={logo.height}
+              width={logo.width}
+              alt={logo.alt}
+              className={cn("mb-12 h-10 w-fit", logo.className ?? "")}
+            />
+          </Link>
           {/* Form */}
           {children}
 

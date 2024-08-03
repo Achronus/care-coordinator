@@ -257,7 +257,6 @@ def schedule_appointment(
     try:
         data = details.model_dump()
         data.pop("id")
-        data["schedule"] = details.schedule.isoformat()
 
         response = db.update_one(
             details.id,

@@ -12,7 +12,7 @@ class AppointmentBase(BaseModel):
 
     reason: str = Field(..., description="The reason for the appointment.")
     notes: str = Field(..., description="Additional notes related to the appointment.")
-    schedule: datetime = Field(
+    schedule: str = Field(
         ...,
         description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
     )
@@ -30,11 +30,8 @@ class AppointmentBase(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     @field_validator("schedule")
-    def validate_schedule(cls, schedule: str | datetime) -> datetime:
-        if isinstance(schedule, str):
-            return datetime.fromisoformat(schedule)
-
-        return datetime.fromisoformat(schedule.isoformat())
+    def validate_schedule(cls, schedule: str) -> str:
+        return datetime.fromisoformat(schedule).isoformat()
 
 
 class CreateAppointment(AppointmentBase):
@@ -57,17 +54,14 @@ class GetAppointmentData(AppointmentBase, AppointmentIdData):
     doctor: DoctorItem = Field(
         ..., description="The details of the doctor assigned to the appointment."
     )
-    schedule: str | datetime = Field(
+    schedule: str = Field(
         ...,
         description="The date and time of the appointment. Format required: ISO.",
     )
 
     @field_validator("schedule")
-    def validate_schedule(cls, schedule: str | datetime) -> datetime:
-        if isinstance(schedule, str):
-            return datetime.fromisoformat(schedule)
-
-        return datetime.fromisoformat(schedule.isoformat())
+    def validate_schedule(cls, schedule: str) -> datetime:
+        return datetime.fromisoformat(schedule)
 
 
 class GetSuccessDetails(AppointmentIdData):
@@ -81,13 +75,6 @@ class GetSuccessDetails(AppointmentIdData):
         description="The date and time of the appointment. Format required: ISO.",
     )
 
-    @field_validator("schedule")
-    def validate_schedule(cls, schedule: str | datetime) -> datetime:
-        if isinstance(schedule, str):
-            return datetime.fromisoformat(schedule)
-
-        return datetime.fromisoformat(schedule.isoformat())
-
 
 class AppointmentItemData(BaseModel):
     """The core appointment information."""
@@ -95,7 +82,7 @@ class AppointmentItemData(BaseModel):
     id: str = Field(..., description="The id of the appointment.")
     reason: str = Field(..., description="The reason for the appointment.")
     notes: str = Field(..., description="Additional notes related to the appointment.")
-    schedule: datetime = Field(
+    schedule: str = Field(
         ...,
         description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
     )
@@ -116,11 +103,8 @@ class AppointmentItemData(BaseModel):
     model_config = ConfigDict(use_enum_values=True)
 
     @field_validator("schedule")
-    def validate_schedule(cls, schedule: str | datetime) -> datetime:
-        if isinstance(schedule, str):
-            return datetime.fromisoformat(schedule)
-
-        return datetime.fromisoformat(schedule.isoformat())
+    def validate_schedule(cls, schedule: str) -> datetime:
+        return datetime.fromisoformat(schedule)
 
 
 class AppointmentCountsData(BaseModel):
@@ -153,15 +137,12 @@ class ScheduleAppointment(BaseModel):
     notes: str | None = Field(
         None, description="Additional notes related to the appointment."
     )
-    schedule: datetime = Field(
+    schedule: str = Field(
         ...,
         description="The date and time of the appointment. Format: dd/mm/yyyy, hh:mm:ss",
     )
     status: Status = Field(..., description="The status of the appointment.")
 
     @field_validator("schedule")
-    def validate_schedule(cls, schedule: str | datetime) -> datetime:
-        if isinstance(schedule, str):
-            return datetime.fromisoformat(schedule)
-
-        return datetime.fromisoformat(schedule.isoformat())
+    def validate_schedule(cls, schedule: str) -> str:
+        return datetime.fromisoformat(schedule).isoformat()

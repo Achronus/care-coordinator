@@ -99,8 +99,6 @@ class StorageCRUD(BaseModel):
     """Handles create, read, update, and delete operations for the user database."""
 
     db: Storage
-    db_id: str
-    collection_id: str
     bucket_id: str
 
     model_config = ConfigDict(arbitrary_types_allowed=True)

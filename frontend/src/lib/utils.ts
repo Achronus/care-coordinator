@@ -46,7 +46,7 @@ export const convertFileToObject = (file: File) => {
   });
 };
 
-export const formatDateTime = (datetime: string) => {
+export const formatDateTime = (datetime: string | Date) => {
   return new Date(datetime).toLocaleString("en-GB", {
     month: "short",
     day: "numeric",

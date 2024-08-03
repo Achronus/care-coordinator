@@ -30,7 +30,7 @@ export const columns: ColumnDef<SingleAppointmentItem>[] = [
     cell: ({ row }) => {
       return (
         <p className="text-14-regular min-w-[100px]">
-          {formatDateTime(new Date(row.original.schedule).toDateString())}
+          {formatDateTime(new Date(row.original.schedule))}
         </p>
       );
     },

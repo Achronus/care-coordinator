@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { addPatient, uploadFile } from "@/actions/patient.actions";
 import { useProjectStore } from "@/hooks/useProjectStore";
 import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
@@ -40,16 +41,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     defaultValues: formData,
   });
 
-  const {
-    doctors,
-    doctorsLoading,
-    fetchDoctors,
-    patient,
-    fileDetails,
-    patientError,
-    uploadFile,
-    addPatient,
-  } = useProjectStore();
+  const { doctors, doctorsLoading, fetchDoctors } = useProjectStore();
 
   useEffect(() => {
     fetchDoctors();
@@ -68,7 +60,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
       fileData.append("file", formValues.identificationDocument[0]);
     }
 
-    uploadFile(fileData);
+    const { fileDetails, fileError } = await uploadFile(fileData);
 
     const { identificationDocument, primaryPhysician, ...formValuesCopy } =
       formValues;
@@ -84,7 +76,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
         )!.id,
       };
 
-      addPatient(fullFormData);
+      const { patient, patientError } = await addPatient(fullFormData);
 
       if (patient) {
         router.push(
@@ -98,7 +90,7 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     } else {
       setFormData(formValues);
       setFormSubmitLoading(false);
-      setFormError(patientError);
+      setFormError(fileError);
     }
   };
 

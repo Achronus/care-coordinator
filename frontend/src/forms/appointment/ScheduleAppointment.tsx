@@ -1,5 +1,6 @@
 "use client";
 
+import { scheduleAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
@@ -45,13 +46,7 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
 
   const appointmentId = searchParams.get("appointmentId") ?? "";
 
-  const {
-    doctors,
-    doctorsLoading,
-    appointmentId: appointmentResponse,
-    appointmentError,
-    scheduleAppointment,
-  } = useProjectStore();
+  const { doctors, doctorsLoading } = useProjectStore();
 
   const form = useForm<z.infer<typeof ScheduleAppointmentSchema>>({
     resolver: zodResolver(ScheduleAppointmentSchema),
@@ -77,7 +72,8 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
           notes: formValues.notes ?? "",
         };
 
-        scheduleAppointment(appointmentData);
+        const { appointmentId: appointmentResponse, appointmentError } =
+          await scheduleAppointment(appointmentData);
 
         if (appointmentResponse) {
           form.reset();

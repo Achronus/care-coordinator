@@ -1,5 +1,6 @@
 "use client";
 
+import { addAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
@@ -39,14 +40,7 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
   );
   const router = useRouter();
 
-  const {
-    doctors,
-    doctorsLoading,
-    fetchDoctors,
-    appointmentId,
-    appointmentError,
-    addAppointment,
-  } = useProjectStore();
+  const { doctors, doctorsLoading, fetchDoctors } = useProjectStore();
 
   useEffect(() => {
     fetchDoctors();
@@ -77,11 +71,13 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
           notes: formValues.notes,
         };
 
-        addAppointment(appointmentData);
+        const { appointmentId, appointmentError } = await addAppointment(
+          appointmentData
+        );
 
         if (appointmentId) {
           router.push(
-            `/patients/${userId}/new-appointment/success?appointmentId=${appointmentId}`
+            `/patients/${userId}/new-appointment/success?appointmentId=${appointmentId.id}`
           );
         } else {
           setFormData(formValues);

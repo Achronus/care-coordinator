@@ -1,22 +1,59 @@
 "use client";
 
+import { getAppointments } from "@/actions/appointment.actions";
 import { Loading } from "@/components/Loading";
 import StatCard from "@/components/StatCard";
 import { AppointmentTable } from "@/components/appointments";
 
 import { useProjectStore } from "@/hooks/useProjectStore";
+import { AppointmentListData } from "@/types/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Admin = () => {
-  const { appointments, appointmentsLoading, getAppointments, fetchDoctors } =
-    useProjectStore();
+  const searchParams = useSearchParams();
+  const [appointments, setAppointments] = useState<AppointmentListData | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  const success = searchParams.get("success") ?? false;
+
+  const { fetchDoctors } = useProjectStore();
 
   useEffect(() => {
-    getAppointments();
+    const fetchData = async () => {
+      const { appointments } = await getAppointments();
+      setAppointments(appointments);
+
+      if (appointments) {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    if (!success) {
+      return;
+    }
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      const { appointments } = await getAppointments();
+      setAppointments(appointments);
+
+      if (appointments) {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [success]);
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col space-y-14">
@@ -40,7 +77,7 @@ const Admin = () => {
           </p>
         </section>
 
-        {appointmentsLoading ? (
+        {isLoading ? (
           <Loading />
         ) : (
           appointments && (

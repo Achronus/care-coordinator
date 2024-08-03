@@ -1,10 +1,10 @@
 "use client";
 
+import { cancelAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
-import { useProjectStore } from "@/hooks/useProjectStore";
 import { AppointmentTypeDetails } from "@/lib/constants";
 import { CancelAppointmentSchema } from "@/lib/validation";
 
@@ -43,12 +43,6 @@ const CancelAppointment = ({ appointment }: CancelAppointmentProps) => {
     defaultValues: formData,
   });
 
-  const {
-    appointmentId: appointmentResponse,
-    appointmentError,
-    cancelAppointment,
-  } = useProjectStore();
-
   const onSubmit = async (
     formValues: z.infer<typeof CancelAppointmentSchema>
   ) => {
@@ -63,7 +57,8 @@ const CancelAppointment = ({ appointment }: CancelAppointmentProps) => {
           status: details!.status,
         };
 
-        cancelAppointment(appointmentData);
+        const { appointmentId: appointmentResponse, appointmentError } =
+          await cancelAppointment(appointmentData);
 
         if (appointmentResponse) {
           form.reset();

@@ -1,13 +1,13 @@
 "use client";
 
+import { addUser } from "@/actions/user.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
-import { post } from "@/lib/retrieval";
 
 import { UserFormValidation } from "@/lib/validation";
-import { ErrorMsg, User } from "@/types/api";
+import { ErrorMsg } from "@/types/api";
 import { FormFieldType } from "@/types/enums";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,10 +29,7 @@ const UserForm = () => {
 
   const onSubmit = async (formValues: z.infer<typeof UserFormValidation>) => {
     setIsLoading(true);
-    const { data: user, error: userError } = await post<User>(
-      "auth/user/register",
-      formValues
-    );
+    const { user, userError } = await addUser(formValues);
 
     if (user) {
       router.push(`/patients/${user.userID}/register`);

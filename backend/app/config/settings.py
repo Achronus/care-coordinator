@@ -3,20 +3,20 @@ from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-load_dotenv_file(".env.backend", "care_coordinator")
+load_dotenv_file(".env.demo", "care_coordinator")
 
 
 class DatabaseConfig(BaseModel):
     """A place to store the appwrite database settings."""
 
-    ID: str
-    PROJECT_ID: str
-    API_KEY: str
-    PATIENT_COLLECTION_ID: str
-    DOCTOR_COLLECTION_ID: str
-    APPOINTMENT_COLLECTION_ID: str
-    BUCKET_ID: str
-    ENDPOINT_URL: str
+    ID: str | None = None
+    PROJECT_ID: str | None = None
+    API_KEY: str | None = None
+    PATIENT_COLLECTION_ID: str | None = None
+    DOCTOR_COLLECTION_ID: str | None = None
+    APPOINTMENT_COLLECTION_ID: str | None = None
+    BUCKET_ID: str | None = None
+    ENDPOINT_URL: str | None = None
 
 
 class Settings(BaseSettings):

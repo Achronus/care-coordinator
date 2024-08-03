@@ -4,6 +4,14 @@ Care Coordinator is one of my demo portfolio projects. Conceptually, it is a web
 
 This full-stack application includes a host of different features on both the frontend and backend. We'll look at these in more detail in the next section.
 
+## A Note On Code
+
+As a demo application, all the `backend` endpoints are set into `demo` mode. This means the responses don't connect directly to the database, instead they display data that looks like the response. 
+
+Similarly, the `frontend` forms are mostly disabled. You can select some for interactive purposes. Form validation has been disabled and you cannot add or update any records in the database.
+
+To view the code without `demo_mode`, check the [no-demo-mode](https://github.com/Achronus/care-coordinator/tree/no-demo-mode) branch.
+
 ## Tech Stack
 
 The tech stack centres around `Python` on the backend and `Next.js` on the frontend.
@@ -14,7 +22,6 @@ The tech stack centres around `Python` on the backend and `Next.js` on the front
 - [FastAPI](https://fastapi.tiangolo.com/) - for API management and database requests
 - [Pydantic](https://docs.pydantic.dev/latest/) - for model/class attribute validation
 - [Appwrite](https://appwrite.io/) - database management solution
-- [Pytest](https://docs.pytest.org/en/8.2.x/) - for unit tests
 
 ### Frontend
 
@@ -25,7 +32,7 @@ The tech stack centres around `Python` on the backend and `Next.js` on the front
 - [Typescript](https://www.typescriptlang.org/) - for prop type safety and validation
 - [Lucide React](https://lucide.dev/) - for lightweight and beautiful icons
 - [TailwindCSS](https://tailwindcss.com/) - for CSS styling
-  
+
 ### Notable Features
 
 - Uses Python generics for consistent route reponses

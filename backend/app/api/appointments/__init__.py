@@ -1,11 +1,9 @@
+from datetime import datetime
 from typing import Annotated
 
 from app.api.patients.schema import PatientItem
-from app.api.responses.messages import HTTP_ERROR_404, HTTP_ERROR_409
-from app.db import get_appointment_db
 
 from app.api.doctors.schema import DoctorItem
-from app.db.crud import CRUD
 
 from .schema import (
     CancelAppointment,
@@ -25,13 +23,9 @@ from .response import (
     AppointmentIdResponse,
 )
 
-from appwrite.exception import AppwriteException
-from appwrite.permission import Permission
-from appwrite.role import Role
-from appwrite.query import Query
 
-from fastapi import APIRouter, Depends, HTTPException, status
-
+from fastapi import APIRouter, Path, status
+from zentra_api.responses import get_response_models
 
 router = APIRouter(prefix="/appointment", tags=["Appointments"])
 
@@ -40,237 +34,172 @@ router = APIRouter(prefix="/appointment", tags=["Appointments"])
     "/create",
     status_code=status.HTTP_201_CREATED,
     response_model=AppointmentIdResponse,
-    responses=HTTP_ERROR_409,
+    responses=get_response_models(409),
 )
 def create_appointment(
-    appointment: CreateAppointment,
-    db: Annotated[CRUD, Depends(get_appointment_db)],
+    appointment: CreateAppointment = CreateAppointment(
+        reason="I'm in need of a checkup.",
+        notes="I've been doing a lot of running lately!",
+        schedule=datetime(year=2024, month=8, day=16, hour=13, minute=30).isoformat(),
+        status="pending",
+        patient="66ae1a630027aa57af4d",
+        userId="66adf1210015d40e66ee",
+        primaryPhysician="66927f7d003c45d3ccf6",
+        cancellationReason=None,
+    ),
 ):
-    try:
-        response = db.create_one(
-            data=appointment.model_dump(),
-            permissions=[
-                Permission.read(Role.user(id=appointment.userId)),
-                Permission.write(Role.user(id=appointment.userId)),
-                Permission.read(Role.team(id="admin")),
-                Permission.write(Role.team(id="admin")),
-            ],
-        )
-
-        return AppointmentIdResponse(
-            code=status.HTTP_201_CREATED,
-            data=AppointmentIdData(
-                id=response["$id"],
-            ),
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="An appointment already exists with these details.",
-        )
+    return AppointmentIdResponse(
+        code=status.HTTP_201_CREATED,
+        data=AppointmentIdData(
+            id="66ae1e99000b7ff3f33f",
+        ),
+    )
 
 
 @router.get(
     "/list",
     status_code=status.HTTP_200_OK,
     response_model=GetRecentAppointmentsResponse,
-    responses=HTTP_ERROR_404,
+    responses=get_response_models(404),
 )
-def get_recent_appointments(db: Annotated[CRUD, Depends(get_appointment_db)]):
-    try:
-        appointments = db.get_multiple(queries=[Query.order_desc("$createdAt")])
-        scheduled = db.get_multiple(
-            queries=[
-                Query.equal("status", "scheduled"),
-                Query.select("$id"),
-            ]
-        )
-        pending = db.get_multiple(
-            queries=[
-                Query.equal("status", "pending"),
-                Query.select("$id"),
-            ]
-        )
-        cancelled = db.get_multiple(
-            queries=[
-                Query.equal("status", "cancelled"),
-                Query.select("$id"),
-            ]
-        )
-
-        appointments = [
+def get_recent_appointments():
+    data = AppointmentCountsData(
+        scheduledCount=0,
+        pendingCount=1,
+        cancelledCount=0,
+        appointments=[
             AppointmentItemData(
-                id=appointment["$id"],
-                reason=appointment["reason"],
-                notes=appointment["notes"],
-                schedule=appointment["schedule"],
-                status=appointment["status"],
-                cancellationReason=appointment["cancellationReason"],
-                userId=appointment["userId"],
+                id="66ae1e99000b7ff3f33f",
+                reason="I'm in need of a checkup.",
+                notes="I've been doing a lot of running lately!",
+                schedule=datetime(
+                    year=2024, month=8, day=16, hour=13, minute=30
+                ).isoformat(),
+                status="pending",
                 patient=PatientItem(
-                    id=appointment["patient"]["$id"],
-                    name=appointment["patient"]["name"],
+                    id="66ae1a630027aa57af4d",
+                    name="John Doe",
                 ),
+                userId="66adf1210015d40e66ee",
                 physician=DoctorItem(
-                    id=appointment["primaryPhysician"]["$id"],
-                    name=appointment["primaryPhysician"]["name"],
-                    avatarIcon=appointment["primaryPhysician"]["avatarIcon"],
+                    id="66927f7d003c45d3ccf6",
+                    name="David Livingston",
+                    avatarIcon="https://<avatarurl>.com/",
                 ),
             )
-            for appointment in appointments["documents"]
-        ]
+        ],
+    )
 
-        data = AppointmentCountsData(
-            scheduledCount=len(scheduled["documents"]),
-            pendingCount=len(pending["documents"]),
-            cancelledCount=len(cancelled["documents"]),
-            appointments=appointments,
-        )
-
-        return GetRecentAppointmentsResponse(
-            code=status.HTTP_200_OK,
-            data=data,
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointments cannot be found.",
-        )
+    return GetRecentAppointmentsResponse(
+        code=status.HTTP_200_OK,
+        data=data,
+    )
 
 
 @router.get(
     "/{id}",
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentResponse,
-    responses=HTTP_ERROR_404,
+    responses=get_response_models(404),
 )
-def get_appointment(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
-    try:
-        response = db.get_one(id)
-
-        patient = response["patient"]
-        doctor = DoctorItem(
-            **response["primaryPhysician"],
-            id=response["primaryPhysician"]["$id"],
-        )
-        core_data: dict = response
-        core_data.pop("patient")
-
-        data = GetAppointmentData(
-            **core_data,
-            id=response["$id"],
-            doctor=doctor,
-            patient=patient["$id"],
-        )
-
-        return GetAppointmentResponse(
-            code=status.HTTP_200_OK,
-            data=data,
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment doesn't exist.",
-        )
+def get_appointment(
+    id: Annotated[
+        str,
+        Path(
+            ...,
+            description="The ID of the appointment. Try using: '66ae1e99000b7ff3f33f'",
+        ),
+    ],
+):
+    return GetAppointmentResponse(
+        code=status.HTTP_200_OK,
+        data=GetAppointmentData(
+            id="66ae1e99000b7ff3f33f",
+            reason="I'm in need of a checkup.",
+            notes="I've been doing a lot of running lately!",
+            schedule=datetime(
+                year=2024, month=8, day=16, hour=13, minute=30
+            ).isoformat(),
+            status="pending",
+            patient="66ae1a630027aa57af4d",
+            userId="66adf1210015d40e66ee",
+            doctor=DoctorItem(
+                id="66927f7d003c45d3ccf6",
+                name="David Livingston",
+                avatarIcon="https://<avatarurl>.com/",
+            ),
+            cancellationReason=None,
+        ),
+    )
 
 
 @router.get(
     "/{id}/success",
     status_code=status.HTTP_200_OK,
     response_model=GetAppointmentSuccessDetailsResponse,
-    responses=HTTP_ERROR_404,
+    responses=get_response_models(404),
 )
-def get_success_details(id: str, db: Annotated[CRUD, Depends(get_appointment_db)]):
-    try:
-        response = db.get_one(id)
-
-        doctor = DoctorItem(
-            **response["primaryPhysician"],
-            id=response["primaryPhysician"]["$id"],
-        )
-
-        data = GetSuccessDetails(
-            id=response["$id"],
-            doctor=doctor,
-            schedule=response["schedule"],
-        )
-
-        return GetAppointmentSuccessDetailsResponse(
-            code=status.HTTP_200_OK,
-            data=data,
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment doesn't exist.",
-        )
+def get_success_details(
+    id: Annotated[
+        str,
+        Path(
+            ...,
+            description="The ID of the appointment. Try using: '66ae1e99000b7ff3f33f'",
+        ),
+    ],
+):
+    return GetAppointmentSuccessDetailsResponse(
+        code=status.HTTP_200_OK,
+        data=GetSuccessDetails(
+            id="66ae1e99000b7ff3f33f",
+            doctor=DoctorItem(
+                id="66927f7d003c45d3ccf6",
+                name="David Livingston",
+                avatarIcon="https://<avatarurl>.com/",
+            ),
+            schedule=datetime(
+                year=2024, month=8, day=16, hour=13, minute=30
+            ).isoformat(),
+        ),
+    )
 
 
 @router.patch(
     "/cancel",
     status_code=status.HTTP_200_OK,
     response_model=AppointmentIdResponse,
-    responses=HTTP_ERROR_404,
+    responses=get_response_models(404),
 )
 def cancel_appointment(
-    details: CancelAppointment, db: Annotated[CRUD, Depends(get_appointment_db)]
+    details: CancelAppointment = CancelAppointment(
+        id="66ae1e99000b7ff3f33f",
+        cancellationReason="Something else came up, I can't make it. Sorry!",
+        status="cancelled",
+    ),
 ):
-    try:
-        response = db.update_one(
-            details.id,
-            data={
-                "cancellationReason": details.cancellationReason,
-                "status": details.status,
-            },
-        )
-
-        return AppointmentIdResponse(
-            code=status.HTTP_200_OK,
-            data=AppointmentIdData(id=response["$id"]),
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment doesn't exist.",
-        )
+    return AppointmentIdResponse(
+        code=status.HTTP_200_OK,
+        data=AppointmentIdData(id="66ae1e99000b7ff3f33f"),
+    )
 
 
 @router.patch(
     "/schedule",
     status_code=status.HTTP_200_OK,
     response_model=AppointmentIdResponse,
-    responses=HTTP_ERROR_404,
+    responses=get_response_models(404),
 )
 def schedule_appointment(
-    details: ScheduleAppointment, db: Annotated[CRUD, Depends(get_appointment_db)]
+    details: ScheduleAppointment = ScheduleAppointment(
+        id="66ae1e99000b7ff3f33f",
+        primaryPhysician="66927f7d003c45d3ccf6",
+        reason="I'm in need of a checkup.",
+        notes="I've been doing a lot of running lately! ",
+        schedule=datetime(year=2024, month=8, day=16, hour=13, minute=30).isoformat(),
+        status="scheduled",
+    ),
 ):
-    try:
-        data = details.model_dump()
-        data.pop("id")
-
-        response = db.update_one(
-            details.id,
-            data=data,
-        )
-
-        return AppointmentIdResponse(
-            code=status.HTTP_200_OK,
-            data=AppointmentIdData(id=response["$id"]),
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Appointment doesn't exist.",
-        )
+    return AppointmentIdResponse(
+        code=status.HTTP_200_OK,
+        data=AppointmentIdData(id="66ae1e99000b7ff3f33f"),
+    )

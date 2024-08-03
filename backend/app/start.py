@@ -4,7 +4,7 @@ import subprocess
 import uvicorn
 
 
-def development(port: int = 8080) -> None:
+def development(port: int = 8000) -> None:
     subprocess.run(["fastapi", "dev", "app/main.py", "--port", str(port)])
 
 

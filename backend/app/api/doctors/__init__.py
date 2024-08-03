@@ -1,14 +1,10 @@
 from typing import Annotated
-from app.db import get_doctor_db
-from app.db.crud import CRUD
 
 from .schema import DoctorItem
 from .response import DoctorListResponse, GetDoctorResponse
 
 
-from appwrite.exception import AppwriteException
-
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Path, status
 
 router = APIRouter(prefix="/doctor", tags=["Doctors"])
 
@@ -18,30 +14,22 @@ router = APIRouter(prefix="/doctor", tags=["Doctors"])
     status_code=status.HTTP_200_OK,
     response_model=DoctorListResponse,
 )
-def doctors_list(db: Annotated[CRUD, Depends(get_doctor_db)]):
-    try:
-        response = db.get_multiple()
-
-        data = [
+def doctors_list():
+    return DoctorListResponse(
+        code=status.HTTP_200_OK,
+        data=[
             DoctorItem(
-                name=item["name"],
-                avatarIcon=item["avatarIcon"],
-                id=item["$id"],
-            )
-            for item in response["documents"]
-        ]
-
-        return DoctorListResponse(
-            code=status.HTTP_200_OK,
-            data=data,
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=e.message,
-        )
+                name="David Livingston",
+                avatarIcon="https://<avataricon>.com/",
+                id="66927f7d003c45d3ccf6",
+            ),
+            DoctorItem(
+                name="Jasmine Lee",
+                avatarIcon="https://<avataricon>.com/",
+                id="66927f96002253a3aebb",
+            ),
+        ],
+    )
 
 
 @router.get(
@@ -49,24 +37,20 @@ def doctors_list(db: Annotated[CRUD, Depends(get_doctor_db)]):
     status_code=status.HTTP_200_OK,
     response_model=GetDoctorResponse,
 )
-def get_doctor(id: str, db: Annotated[CRUD, Depends(get_doctor_db)]):
-    try:
-        result = db.get_one(id)
-
-        data = DoctorItem(
-            name=result["name"],
-            avatarIcon=result["avatarIcon"],
-            id=result["$id"],
-        )
-
-        return GetDoctorResponse(
-            code=status.HTTP_200_OK,
-            data=data,
-        )
-
-    except AppwriteException as e:
-        print(e.message)
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Doctor doesn't exist.",
-        )
+def get_doctor(
+    id: Annotated[
+        str,
+        Path(
+            ...,
+            description="The ID of the appointment. Try using: '66ae1e99000b7ff3f33f'",
+        ),
+    ],
+):
+    return GetDoctorResponse(
+        code=status.HTTP_200_OK,
+        data=DoctorItem(
+            name="David Livingston",
+            avatarIcon="https://<avataricon>.com/",
+            id="66ae1e99000b7ff3f33f",
+        ),
+    )

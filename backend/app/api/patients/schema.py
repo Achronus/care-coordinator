@@ -63,7 +63,7 @@ class PatientBase(BaseModel):
 
     @field_validator("birthDate")
     def validate_schedule(cls, birth_date: str) -> str:
-        return datetime(birth_date).isoformat()
+        return datetime.fromisoformat(birth_date).isoformat()
 
 
 class CreatePatient(PatientBase):

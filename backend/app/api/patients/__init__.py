@@ -1,17 +1,9 @@
-from typing import Annotated
-
-from app.db import create_file_url, get_patient_db, get_storage_db
-from app.db.crud import CRUD, StorageCRUD
+from datetime import datetime
 
 from .schema import CreatePatient, PatientOutputData, UploadOutputData
 from .response import CreatePatientResponse, PostUploadResponse
 
-from appwrite.exception import AppwriteException
-from appwrite.permission import Permission
-from appwrite.role import Role
-from appwrite.input_file import InputFile
-
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, UploadFile, status
 
 router = APIRouter(prefix="/patient", tags=["Patients"])
 
@@ -23,32 +15,14 @@ router = APIRouter(prefix="/patient", tags=["Patients"])
     operation_id="PatientUpload",
 )
 async def upload_file(
-    db: Annotated[StorageCRUD, Depends(get_storage_db)],
     file: UploadFile = File(..., description="The file to upload."),
 ):
-    try:
-        content = await file.read()
-
-        response = db.create_one(
-            file=InputFile.from_bytes(bytes=content, filename=file.filename),
-            permissions=[
-                Permission.read(Role.team(id="admin")),
-                Permission.write(Role.team(id="admin")),
-            ],
-        )
-
-        return PostUploadResponse(
-            code=status.HTTP_201_CREATED,
-            data=UploadOutputData(
-                id=response["$id"],
-            ),
-        )
-
-    except AppwriteException as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=e.message,
-        )
+    return PostUploadResponse(
+        code=status.HTTP_201_CREATED,
+        data=UploadOutputData(
+            id="66ae1a620010e1eed7c5",
+        ),
+    )
 
 
 @router.post(
@@ -57,44 +31,32 @@ async def upload_file(
     response_model=CreatePatientResponse,
 )
 async def create_patient(
-    patient: CreatePatient,
-    file_db: Annotated[StorageCRUD, Depends(get_storage_db)],
-    patient_db: Annotated[CRUD, Depends(get_patient_db)],
+    patient: CreatePatient = CreatePatient(
+        userId="66adf1210015d40e66ee",
+        name="John Doe",
+        email="johndoe@email.com",
+        phone="+447964528921",
+        birthDate=datetime(year=1990, month=1, day=1).isoformat(),
+        gender="Male",
+        address="Non existent lane, England, UK",
+        occupation="The man of mystery",
+        emergencyContactName="Jane Doe",
+        emergencyContactNumber="+447964528921",
+        primaryPhysician="66927f7d003c45d3ccf6",
+        insuranceProvider="Axa",
+        insurancePolicyNumber="ABC123",
+        allergies=None,
+        currentMedication=None,
+        familyMedicalHistory=None,
+        identificationType="Driver's License",
+        identificationNumber="ABC123",
+        identificationDocumentId="<drivers_license_img>",
+        treatmentConsent=True,
+        disclosureConsent=True,
+        privacyConsent=True,
+    ),
 ):
-    try:
-        file_id = patient.identificationDocumentId
-        url = create_file_url(file_id)
-
-        data = patient.model_dump()
-        data["identificationDocumentUrl"] = url
-        data.pop("userId")
-
-        _ = file_db.update_one(
-            id=file_id,
-            permissions=[
-                Permission.read(Role.user(id=patient.userId)),
-                Permission.write(Role.user(id=patient.userId)),
-            ],
-        )
-
-        response = patient_db.create_one(
-            data=data,
-            permissions=[
-                Permission.read(Role.user(id=patient.userId)),
-                Permission.write(Role.user(id=patient.userId)),
-                Permission.read(Role.team(id="admin")),
-                Permission.write(Role.team(id="admin")),
-            ],
-        )
-
-        return CreatePatientResponse(
-            code=status.HTTP_201_CREATED,
-            data=PatientOutputData(id=response["$id"]),
-        )
-
-    except AppwriteException as e:
-        print(e)
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="A patient already exists with these details.",
-        )
+    return CreatePatientResponse(
+        code=status.HTTP_201_CREATED,
+        data=PatientOutputData(id="66ae1a630027aa57af4d"),
+    )

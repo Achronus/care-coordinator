@@ -1,3 +1,5 @@
+_This branch contains files for the `frontend` demo mode_
+
 # Care Coordinator - Demo Project
 
 Care Coordinator is one of my demo portfolio projects. Conceptually, it is a web-based appointment management software for Healthcare professionals, allowing patients to sign-up and schedule appointments with their doctor efficiently.

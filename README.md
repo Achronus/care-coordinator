@@ -6,6 +6,8 @@ Care Coordinator is one of my demo portfolio projects. Conceptually, it is a web
 
 This full-stack application includes a host of different features on both the frontend and backend. We'll look at these in more detail in the next section.
 
+You can view the route documentation at the [api demo](https://cc-api.achronus.dev/api/docs/) URL.
+
 ## A Note On Code
 
 As a demo application, all the `backend` endpoints are set into `demo` mode. This means the responses don't connect directly to the database, instead they display data that looks like the response. 

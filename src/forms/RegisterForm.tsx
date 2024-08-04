@@ -12,7 +12,7 @@ import { SelectItem } from "@/components/ui/select";
 
 import { RegistrationFormDefaults } from "@/lib/constants";
 import { RegistrationFormValidation } from "@/lib/validation";
-import { CreatePatient, ErrorMsg } from "@/types/api";
+import { ErrorMsg } from "@/types/api";
 import { FormFieldType, Gender, IdentificationTypes } from "@/types/enums";
 
 import Image from "next/image";
@@ -20,7 +20,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { addPatient, uploadFile } from "@/actions/patient.actions";
 import { useProjectStore } from "@/hooks/useProjectStore";
 import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
@@ -51,47 +50,9 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     formValues: z.infer<typeof RegistrationFormValidation>
   ) => {
     setFormSubmitLoading(true);
-
-    let fileData = new FormData();
-    if (
-      formValues.identificationDocument &&
-      formValues.identificationDocument.length > 0
-    ) {
-      fileData.append("file", formValues.identificationDocument[0]);
-    }
-
-    const { fileDetails, fileError } = await uploadFile(fileData);
-
-    const { identificationDocument, primaryPhysician, ...formValuesCopy } =
-      formValues;
-
-    if (fileDetails) {
-      const fullFormData: CreatePatient = {
-        ...formValuesCopy,
-        userId: userId,
-        birthDate: new Date(formValues.birthDate),
-        identificationDocumentId: fileDetails.id,
-        primaryPhysician: doctors!.find(
-          (item) => item.name === formValues.primaryPhysician
-        )!.id,
-      };
-
-      const { patient, patientError } = await addPatient(fullFormData);
-
-      if (patient) {
-        router.push(
-          `/patients/${userId}/new-appointment?patientId=${patient.id}`
-        );
-      } else {
-        setFormData(formValues);
-        setFormSubmitLoading(false);
-        setFormError(patientError);
-      }
-    } else {
-      setFormData(formValues);
-      setFormSubmitLoading(false);
-      setFormError(fileError);
-    }
+    router.push(
+      `/patients/66adf1210015d40e66ee/new-appointment?patientId=66ae1a630027aa57af4d`
+    );
   };
 
   return (

@@ -1,6 +1,5 @@
 "use client";
 
-import { scheduleAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
@@ -8,14 +7,9 @@ import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
 import { useProjectStore } from "@/hooks/useProjectStore";
-import { AppointmentTypeDetails } from "@/lib/constants";
 import { ScheduleAppointmentSchema } from "@/lib/validation";
 
-import {
-  ErrorMsg,
-  ScheduleAppointmentParams,
-  SingleAppointmentItem,
-} from "@/types/api";
+import { ErrorMsg, SingleAppointmentItem } from "@/types/api";
 import { Doctor } from "@/types/common";
 import { FormFieldType } from "@/types/enums";
 import { ScheduleFormType } from "@/types/forms";
@@ -57,44 +51,7 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
     formValues: z.infer<typeof ScheduleAppointmentSchema>
   ) => {
     setIsLoading(true);
-    try {
-      const details = AppointmentTypeDetails.find((item) => item.type === type);
-      const doctor = doctors!.find(
-        (item) => formValues.primaryPhysician === item.name
-      );
-
-      if (details && doctor) {
-        const appointmentData: ScheduleAppointmentParams = {
-          ...formValues,
-          primaryPhysician: doctor.id,
-          id: appointmentId,
-          status: details.status,
-          notes: formValues.notes ?? "",
-        };
-
-        const { appointmentId: appointmentResponse, appointmentError } =
-          await scheduleAppointment(appointmentData);
-
-        if (appointmentResponse) {
-          form.reset();
-          router.push("/admin?success=true");
-        } else {
-          setFormData(formValues);
-          setIsLoading(false);
-          setError(appointmentError);
-        }
-      }
-    } catch (error: any) {
-      console.log(error);
-      setFormData(formValues);
-      setIsLoading(false);
-      setError({
-        status: "error",
-        code: 500,
-        response: "500_INTERNAL_SERVER_ERROR",
-        message: error.message,
-      });
-    }
+    router.push("/admin?success=true");
   };
 
   return (

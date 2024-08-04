@@ -1,6 +1,5 @@
 "use client";
 
-import { addAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
@@ -8,13 +7,10 @@ import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
 import { useProjectStore } from "@/hooks/useProjectStore";
-import {
-  AppointmentFormDefaults,
-  AppointmentTypeDetails,
-} from "@/lib/constants";
+import { AppointmentFormDefaults } from "@/lib/constants";
 import { CreateAppointmentSchema } from "@/lib/validation";
 
-import { CreateAppointmentParams, ErrorMsg } from "@/types/api";
+import { ErrorMsg } from "@/types/api";
 import { Doctor } from "@/types/common";
 import { FormFieldType } from "@/types/enums";
 import { AppointmentFormType } from "@/types/forms";
@@ -55,47 +51,9 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
     formValues: z.infer<typeof CreateAppointmentSchema>
   ) => {
     setIsLoading(true);
-    try {
-      const details = AppointmentTypeDetails.find((item) => item.type === type);
-
-      if (details && patientId) {
-        const appointmentData: CreateAppointmentParams = {
-          userId,
-          patient: patientId,
-          primaryPhysician: doctors!.find(
-            (item) => item.name === formValues.primaryPhysician
-          )!.id,
-          schedule: new Date(formValues.schedule),
-          reason: formValues.reason!,
-          status: details.status,
-          notes: formValues.notes,
-        };
-
-        const { appointmentId, appointmentError } = await addAppointment(
-          appointmentData
-        );
-
-        if (appointmentId) {
-          router.push(
-            `/patients/${userId}/new-appointment/success?patientId=${patientId}&appointmentId=${appointmentId.id}`
-          );
-        } else {
-          setFormData(formValues);
-          setIsLoading(false);
-          setError(appointmentError);
-        }
-      }
-    } catch (error: any) {
-      console.log(error);
-      setFormData(formValues);
-      setIsLoading(false);
-      setError({
-        status: "error",
-        code: 500,
-        response: "500_INTERNAL_SERVER_ERROR",
-        message: error.message,
-      });
-    }
+    router.push(
+      `/patients/66adf1210015d40e66ee/new-appointment/success?patientId=66ae1a630027aa57af4d&appointmentId=66ae557500045def5451`
+    );
   };
 
   return (

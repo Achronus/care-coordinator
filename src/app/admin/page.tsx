@@ -1,6 +1,6 @@
 "use client";
 
-import { getAppointments } from "@/actions/appointment.actions";
+import { getAppointments } from "@/actions/retrieval.action";
 import { Loading } from "@/components/Loading";
 import StatCard from "@/components/StatCard";
 import { AppointmentTable } from "@/components/appointments";

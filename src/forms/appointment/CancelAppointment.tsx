@@ -1,18 +1,12 @@
 "use client";
 
-import { cancelAppointment } from "@/actions/appointment.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
-import { AppointmentTypeDetails } from "@/lib/constants";
 import { CancelAppointmentSchema } from "@/lib/validation";
 
-import {
-  CancelAppointmentParams,
-  ErrorMsg,
-  SingleAppointmentItem,
-} from "@/types/api";
+import { ErrorMsg, SingleAppointmentItem } from "@/types/api";
 import { FormFieldType } from "@/types/enums";
 import { CancellationFormType } from "@/types/forms";
 
@@ -47,39 +41,7 @@ const CancelAppointment = ({ appointment }: CancelAppointmentProps) => {
     formValues: z.infer<typeof CancelAppointmentSchema>
   ) => {
     setIsLoading(true);
-    try {
-      const details = AppointmentTypeDetails.find((item) => item.type === type);
-
-      if (details) {
-        const appointmentData: CancelAppointmentParams = {
-          ...formValues,
-          id: appointmentId,
-          status: details!.status,
-        };
-
-        const { appointmentId: appointmentResponse, appointmentError } =
-          await cancelAppointment(appointmentData);
-
-        if (appointmentResponse) {
-          form.reset();
-          router.push("/admin?success=true");
-        } else {
-          setFormData(formValues);
-          setIsLoading(false);
-          setError(appointmentError);
-        }
-      }
-    } catch (error: any) {
-      console.log(error);
-      setFormData(formValues);
-      setIsLoading(false);
-      setError({
-        status: "error",
-        code: 500,
-        response: "500_INTERNAL_SERVER_ERROR",
-        message: error.message,
-      });
-    }
+    router.push("/admin?success=true");
   };
 
   return (

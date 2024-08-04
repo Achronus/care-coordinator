@@ -20,7 +20,8 @@ class FetchClient {
   private prefix: string;
 
   constructor(rootUrl?: string, prefix?: string) {
-    this.rootUrl = rootUrl ?? `${process.env.FASTAPI_CONNECTION_URL}`;
+    this.rootUrl =
+      rootUrl ?? `${process.env.NEXT_PUBLIC_FASTAPI_CONNECTION_URL}`;
     this.prefix = prefix ?? "";
   }
 

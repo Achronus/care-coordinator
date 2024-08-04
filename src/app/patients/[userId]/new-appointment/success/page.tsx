@@ -24,8 +24,8 @@ const Success = ({ params }: { params: { userId: string } }) => {
   useEffect(() => {
     const fetchData = async () => {
       const { appointment } = await getSuccessDetails(appointmentId);
+      appointment!.doctor.avatarIcon = `${process.env.NEXT_PUBLIC_AVATAR_ICON}`;
       setDetails(appointment);
-
       if (appointment) {
         setIsLoading(false);
       }

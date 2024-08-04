@@ -1,6 +1,5 @@
 "use client";
 
-import { addUser } from "@/actions/user.actions";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import SubmitButton from "@/components/SubmitButton";
@@ -29,15 +28,7 @@ const UserForm = () => {
 
   const onSubmit = async (formValues: z.infer<typeof UserFormValidation>) => {
     setIsLoading(true);
-    const { user, userError } = await addUser(formValues);
-
-    if (user) {
-      router.push(`/patients/${user.userID}/register`);
-    } else {
-      setFormData(formValues);
-      setIsLoading(false);
-      setError(userError);
-    }
+    router.push(`/patients/66adf1210015d40e66ee/register`);
   };
 
   return (

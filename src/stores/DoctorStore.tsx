@@ -12,10 +12,9 @@ export type DoctorStore = {
   doctorsLoading: boolean;
   doctorError: Error;
   fetchDoctors: () => Promise<void>;
-  fetchDoctor: (id: string) => Promise<void>;
 };
 
-const fetch = new FetchClient(undefined, "api/doctor");
+const fetch = new FetchClient(undefined, "api/retrieval");
 
 const APIAction = <T, Params = void>(
   apiCall: (
@@ -40,10 +39,9 @@ export const createDoctorStore: StateCreator<DoctorStore> = (set) => ({
   doctor: null,
   doctorsLoading: true,
   doctorError: null,
-  fetchDoctors: APIAction(() => fetch.get<Doctor[]>("/list"), set, "doctors"),
-  fetchDoctor: APIAction(
-    (id: string) => fetch.get<Doctor>(`/${id}`),
+  fetchDoctors: APIAction(
+    () => fetch.get<Doctor[]>("/doctor/list"),
     set,
-    "doctor"
+    "doctors"
   ),
 });

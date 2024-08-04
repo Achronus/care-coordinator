@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
-const apiUrl = process.env.FASTAPI_CONNECTION_URL;
-const endpointUrl = process.env.ENDPOINT_URL;
+const apiUrl = process.env.NEXT_PUBLIC_FASTAPI_CONNECTION_URL;
+const endpointUrl = process.env.NEXT_PUBLIC_ENDPOINT_URL;
 
 const nextConfig = {
   images: {

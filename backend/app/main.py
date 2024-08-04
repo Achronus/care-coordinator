@@ -26,7 +26,7 @@ app.include_router(retrieval.router, prefix="/api", include_in_schema=False)
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://cc.achronus.dev/",
+    "https://care.achronus.dev/",
 ]
 
 app.add_middleware(

@@ -1,12 +1,12 @@
 "use client";
 
+import { getDoctors } from "@/actions/retrieval.action";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import { useProjectStore } from "@/hooks/useProjectStore";
 import { ScheduleAppointmentSchema } from "@/lib/validation";
 
 import { ErrorMsg, SingleAppointmentItem } from "@/types/api";
@@ -17,7 +17,7 @@ import { ScheduleFormType } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -35,12 +35,23 @@ const ScheduleAppointment = ({ appointment }: ScheduleAppointmentProps) => {
     notes: appointment ? appointment.notes : "",
     schedule: appointment ? new Date(appointment.schedule) : new Date(),
   });
+  const [doctors, setDoctors] = useState<Doctor[] | null>(null);
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const appointmentId = searchParams.get("appointmentId") ?? "";
 
-  const { doctors, doctorsLoading } = useProjectStore();
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      const { doctorsList } = await getDoctors();
+      setDoctors(doctorsList);
+      setDoctorsLoading(false);
+    };
+
+    fetchDoctors();
+  }, []);
 
   const form = useForm<z.infer<typeof ScheduleAppointmentSchema>>({
     resolver: zodResolver(ScheduleAppointmentSchema),

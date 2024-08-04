@@ -1,12 +1,12 @@
 "use client";
 
+import { getDoctors } from "@/actions/retrieval.action";
 import DynamicFormField from "@/components/DynamicFormField";
 import ErrorPanel from "@/components/ErrorPanel";
 import { Loading } from "@/components/Loading";
 import SubmitButton from "@/components/SubmitButton";
 import { Form } from "@/components/ui/form";
 import { SelectItem } from "@/components/ui/select";
-import { useProjectStore } from "@/hooks/useProjectStore";
 import { AppointmentFormDefaults } from "@/lib/constants";
 import { CreateAppointmentSchema } from "@/lib/validation";
 
@@ -30,17 +30,23 @@ type AppointmentFormProps = {
 const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
   const [type, setType] = useState("create");
   const [isLoading, setIsLoading] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[] | null>(null);
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
   const [error, setError] = useState<ErrorMsg | null>(null);
   const [formData, setFormData] = useState<AppointmentFormType>(
     AppointmentFormDefaults
   );
   const router = useRouter();
 
-  const { doctors, doctorsLoading, fetchDoctors } = useProjectStore();
-
   useEffect(() => {
+    const fetchDoctors = async () => {
+      const { doctorsList } = await getDoctors();
+      setDoctors(doctorsList);
+      setDoctorsLoading(false);
+    };
+
     fetchDoctors();
-  }, [fetchDoctors]);
+  }, []);
 
   const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
     resolver: zodResolver(CreateAppointmentSchema),

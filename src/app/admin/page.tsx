@@ -5,7 +5,6 @@ import { Loading } from "@/components/Loading";
 import StatCard from "@/components/StatCard";
 import { AppointmentTable } from "@/components/appointments";
 
-import { useProjectStore } from "@/hooks/useProjectStore";
 import { AppointmentListData } from "@/types/api";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,8 +20,6 @@ const Admin = () => {
 
   const success = searchParams.get("success") ?? false;
 
-  const { fetchDoctors } = useProjectStore();
-
   useEffect(() => {
     const fetchData = async () => {
       const { appointments } = await getAppointments();
@@ -34,7 +31,6 @@ const Admin = () => {
     };
 
     fetchData();
-    fetchDoctors();
   }, []);
 
   useEffect(() => {

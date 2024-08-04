@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { useProjectStore } from "@/hooks/useProjectStore";
+import { getDoctors } from "@/actions/retrieval.action";
 import { Doctor } from "@/types/common";
 import { PatientDetailsForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +33,8 @@ const RegisterForm = ({ userId }: { userId: string }) => {
   const [formData, setFormData] = useState<PatientDetailsForm>(
     RegistrationFormDefaults
   );
+  const [doctors, setDoctors] = useState<Doctor[] | null>(null);
+  const [doctorsLoading, setDoctorsLoading] = useState(true);
   const [formError, setFormError] = useState<ErrorMsg | null>(null);
 
   const form = useForm<z.infer<typeof RegistrationFormValidation>>({
@@ -40,11 +42,15 @@ const RegisterForm = ({ userId }: { userId: string }) => {
     defaultValues: formData,
   });
 
-  const { doctors, doctorsLoading, fetchDoctors } = useProjectStore();
-
   useEffect(() => {
+    const fetchDoctors = async () => {
+      const { doctorsList } = await getDoctors();
+      setDoctors(doctorsList);
+      setDoctorsLoading(false);
+    };
+
     fetchDoctors();
-  }, [fetchDoctors]);
+  }, []);
 
   const onSubmit = async (
     formValues: z.infer<typeof RegistrationFormValidation>

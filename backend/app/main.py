@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from app import auth
-from app.api import doctors, patients, appointments
+from app.api import doctors, patients, appointments, retrieval
 
 from app.api.responses import ErrorResponse
 from fastapi import FastAPI, HTTPException, Request
@@ -21,10 +21,12 @@ app.include_router(auth.router)
 app.include_router(appointments.router, prefix="/api")
 app.include_router(doctors.router, prefix="/api")
 app.include_router(patients.router, prefix="/api")
+app.include_router(retrieval.router, prefix="/api", include_in_schema=False)
 
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://cc.achronus.dev/",
 ]
 
 app.add_middleware(

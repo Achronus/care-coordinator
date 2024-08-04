@@ -1,9 +1,9 @@
-from app.config.env import load_dotenv_file
+# from app.config.env import load_dotenv_file
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-load_dotenv_file(".env.backend", "care_coordinator")
+# load_dotenv_file(".env.backend", "care_coordinator")
 
 
 class DatabaseConfig(BaseModel):
@@ -25,7 +25,8 @@ class Settings(BaseSettings):
     DB: DatabaseConfig
 
     model_config = SettingsConfigDict(
-        env_file=".env.backend", env_nested_delimiter="__"
+        # env_file=".env.backend",
+        env_nested_delimiter="__",
     )
 
 

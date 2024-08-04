@@ -77,7 +77,7 @@ const CreateAppointmentForm = ({ userId, patientId }: AppointmentFormProps) => {
 
         if (appointmentId) {
           router.push(
-            `/patients/${userId}/new-appointment/success?appointmentId=${appointmentId.id}`
+            `/patients/${userId}/new-appointment/success?patientId=${patientId}&appointmentId=${appointmentId.id}`
           );
         } else {
           setFormData(formValues);

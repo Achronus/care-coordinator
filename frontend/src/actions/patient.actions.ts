@@ -1,7 +1,7 @@
 "use server";
 
 import FetchClient from "@/lib/fetch-client";
-import { APIDataId, APIEmailData, CreatePatient } from "@/types/api";
+import { APIDataId, CreatePatient } from "@/types/api";
 
 const fetch = new FetchClient(undefined, "api/patient");
 

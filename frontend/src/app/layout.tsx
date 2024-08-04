@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 
 const fontSans = Plus_Jakarta_Sans({
@@ -31,7 +32,7 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark">
-          {children}
+          <Suspense>{children}</Suspense>
         </ThemeProvider>
       </body>
     </html>
